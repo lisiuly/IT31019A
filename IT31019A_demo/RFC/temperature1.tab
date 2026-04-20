@@ -1,0 +1,192 @@
+;============================================================================
+;File Name:	    temperature.tab
+;Applied body:	GPLxx
+;Purpose:		Define R-T data table of temperature sensor 
+;Programmer:	yangff
+;Date:			2010-01-28  for 10K RFC
+;============================================================================
+T_INDEX_RTMPEXP_BLOCK:  ;Mapping Rtmp into the specific block
+        ;     block index           Rtmp EXP (unit: kohm)
+        DB      2                   ;0
+        DB      1                   ;1
+        DB      0                   ;2
+        DB      INVALID_INDEX_BLOCK ;>2
+
+;============================================================================
+T_INDEX_BLOCK_T:    ;Data Block definition
+        DB      C_INDEX_NEG32,   C_INDEX_10       ;0x32+0x80  ;-32'C
+        DB      C_INDEX_10,      C_INDEX_66       ;0x10       ;10'C
+        DB      C_INDEX_66,      C_R_T_DATA_NUM   ;0x66       ;66'C
+        
+;============================================================================
+T_R_T_HIGHBYTE:  ;R-T high byte data table
+
+
+    
+    C_INDEX_NEG32:  EQU     $ - T_R_T_HIGHBYTE
+ 
+        
+
+    C_INDEX_10:     EQU     $ - T_R_T_HIGHBYTE
+    ;       10Kohm   -20 'C	    96.88 kohm       	
+        DB      0x54 	;-10	
+        DB      0x52 	;-9	
+        DB      0x49 	;-8	
+        DB      0x46 	;-7	 
+        DB      0x44 	;-6	 
+        DB      0x42 	;-5	 
+        DB      0x40 	;-4	 
+        DB      0x38 	;-3	 
+        DB      0x36 	;-2	
+        DB      0x34 	;-1	
+        DB      0x32    ;0	
+        DB      0x31 	;1	    
+        DB      0x29 	;2	    
+        DB      0x28 	;3	    
+        DB      0x26 	;4	    
+        DB      0x25 	;5	    
+        DB      0x24 	;6	    
+        DB      0x22 	;7	    
+        DB      0x21 	;8	    
+        DB      0x20 	;9
+        DB      0x19 	;10
+        DB      0x18 	;11	    
+        DB      0x18 	;12	    
+        DB      0x17 	;13	    
+        DB      0x16 	;14	    
+        DB      0x15	;15	    
+        DB      0x14 	;16	    
+        DB      0x14 	;17	    
+        DB      0x13 	;18	    
+        DB      0x13 	;19	    
+        DB      0x12 	;20	    
+        DB      0x11 	;21	    
+        DB      0x11 	;22	    
+        DB      0x10	;23	    
+        DB      0x10 	;24	    
+        DB      0x10 	;25'C 10.00L
+
+    C_INDEX_66:     EQU     $ - T_R_T_HIGHBYTE
+        ;       ohm     'C
+        DB      0x96	;26	    9.675 kohm  
+        DB      0x92 	;27	    
+        DB      0x88 	;28	    
+        DB      0x84 	;29	    
+        DB      0x80 	;30	    
+        DB      0x73 	;31	    
+        DB      0x74 	;32	    
+        DB      0x71 	;33	    
+        DB      0x68 	;34	    
+        DB      0x65 	;35	    
+        DB      0x62 	;36	    
+        DB      0x60 	;37	    
+        DB      0x57 	;38	    
+        DB      0x55 	;39	    
+        DB      0x53 	;40	    
+        DB      0x51 	;41	    
+        DB      0x49 	;42	    
+        DB      0x47 	;43	    
+        DB      0x45 	;44	    
+        DB      0x43 	;45	    
+        DB      0x41 	;46	    
+        DB      0x40 	;47	    
+        DB      0x38 	;48	    
+        DB      0x37 	;49	    
+        DB      0x35 	;50	    
+        DB      0x34    ;51	    
+        DB      0x33 	;52	     	
+        DB      0x31 	;53	    
+        DB      0x30 	;54	    
+        DB      0x29 	;55	    
+        DB      0x28 	;56	    
+        DB      0x27 	;57	    
+        DB      0x26 	;58	    
+        DB      0x25	;59	    
+        DB      0x24 	;60	    
+ 
+        
+    C_R_T_DATA_NUM:     EQU     $ - T_R_T_HIGHBYTE
+ 
+;============================================================================
+T_R_T_LOWBYTE:  ;R-T low byte data table
+
+
+;       10Kohm   -20 'C	    96.88 kohm        
+	
+        DB      0x94 	;-10	
+        DB      0x06 	;-9	
+        DB      0x35 	;-8	
+        DB      0x82 	;-7	 
+        DB      0x43	;-6	 
+        DB      0x19 	;-5	 
+        DB      0x08 	;-4	 
+        DB      0x09 	;-3	 
+        DB      0x22 	;-2	
+        DB      0x46 	;-1	
+        DB      0x79    ;0	
+        DB      0x11 	;1	    
+        DB      0x53 	;2	    
+        DB      0x05 	;3	    
+        DB      0x65 	;4	    
+        DB      0x34 	;5	    
+        DB      0x11 	;6	    
+        DB      0x94 	;7	    
+        DB      0x84 	;8	    
+        DB      0x81 	;9
+        DB      0x83	;10	    19.83K
+        DB      0x90 	;11	    
+        DB      0x02 	;12	    
+        DB      0x19 	;13	    
+        DB      0x41 	;14	    
+        DB      0x66 	;15	    
+        DB      0x96 	;16	    
+        DB      0x29 	;17	    
+        DB      0x65 	;18	    
+        DB      0x05 	;19	    
+        DB      0x47 	;20	    
+        DB      0x93 	;21	    ;;1193
+        DB      0x41 	;22	    ;;1141
+        DB      0x92 	;23	    ;;1092
+        DB      0x45 	;24	    ;;1045
+        DB      0x00 	;25	    ; 10.00K    
+        DB      0x75 	;26	 9.675 kohm   
+        DB      0x70 	;27	    
+        DB      0x84 	;28	    
+        DB      0x16 	;29	    
+        DB      0x65 	;30	    
+        DB      0x31 	;31	    
+        DB      0x12 	;32	    
+        DB      0x07 	;33	    
+        DB      0x17 	;34	    
+        DB      0x39 	;35	    
+        DB      0x74 	;36	    
+        DB      0x21 	;37	    
+        DB      0x80 	;38	    
+        DB      0x49 	;39	    
+        DB      0x28 	;40	    
+        DB      0x18 	;41	    
+        DB      0x16 	;42	    
+        DB      0x23 	;43	    
+        DB      0x39 	;44	    
+        DB      0x62 	;45	    
+        DB      0x94 	;46	    
+        DB      0x32 	;47	    
+        DB      0x78 	;48	    
+        DB      0x30 	;49	    
+        DB      0x88 	;50	    
+        DB      0x53    ;51	    
+        DB      0x23 	;52	     	
+        DB      0x99 	;53	    
+        DB      0x80 	;54	    
+        DB      0x66 	;55	    
+        DB      0x56 	;56	    
+        DB      0x52 	;57	    
+        DB      0x51 	;58	    
+        DB      0x55 	;59	    
+        DB      0x63 	;60	    
+	    
+
+	
+	
+	
+	

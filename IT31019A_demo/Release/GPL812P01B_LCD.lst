@@ -1,0 +1,736 @@
+        Generalplus 6502 Assembler - Version 1.7.1.0  
+              Listing File Has Been Relocated
+
+     1                              				.SYNTAX 6502
+     2                                              .LINKLIST
+     3                                              .SYMBOLS
+     4                                              
+     5                              ;==================================================================================
+     6                              ; The information contained herein is the exclusive property of
+     7                              ; Generalplus Technology Co. And shall !be distributed, reproduced,
+     8                              ; or disclosed in whole in part without prior written permission.
+     9                              ;       (C) COPYRIGHT 2010   Generalplus TECHNOLOGY CO.                            
+    10                              ;                   ALL RIGHTS RESERVED
+    11                              ; The entire notice above must be reproduced on all authorized copies.
+    12                              ;==================================================================================
+    13                              ;==========================================================================
+    14                              ; Program Name: GPL812P01B_LCD.asm
+    15                              ; Applied body: GPL812P01B
+    16                              ; Programmer  : Neo Chuang
+    17                              ; Description : LCD Driver code
+    18                              ; History version
+    19                              ; Rev #     Date       Who      Comments
+    20                              ; -----  -----------  ------    --------------------------------------------
+    21                              ; 1.0     2018/03/28  NeoChuang    Oringinal Version
+    22                              ;==========================================================================
+    23                              
+    24                              
+    25                              ;==================================================================================
+    26                              ; Include file area
+    27                              ;==================================================================================
+    28                              .INCLUDE 	GPL812P01B.inc
+    29                      <       	.IFDEF		GPL812_SERIES
+    30                      <       
+    31                      <       ;---------------------------------
+    32                      <       GPL812P01Bx		.EQU		1
+    33                      <       ;---------------------------------
+    34                      <       
+    35                      <       .IFNDEF GPL812PX_Body_inc
+    36                      <       GPL812PX_Body_inc:   .EQU    1
+    37                      <       ;==================================================================================
+    38                      <       ; The information contained herein is the exclusive property of
+    39                      <       ; Generalplus Technology Co. And shall not be distributed, reproduced,
+    40                      <       ; or disclosed in whole in part without prior written permission.
+    41                      <       ;       (C) COPYRIGHT 2012   Generalplus TECHNOLOGY CO.                            
+    42                      <       ;                   ALL RIGHTS RESERVED
+    43                      <       ; The entire notice above must be reproduced on all authorized copies.
+    44                      <       ;==================================================================================
+    45                      <       ;==================================================================================
+    46                      <       ; Program Name: GPL812PX series register declare
+    47                      <       ; Applied body: GPL812PX series
+    48                      <       ; Programmer  : 
+    49                      <       ; Description : 
+    50                      <       ;             : 
+    51                      <       ; History version
+    52                      <       ; Rev #       Date          Who            Comments
+    53                      <       ; -------  -----------    --------         ----------------------------------------
+    54                      <       ; 1.0       2012-05-07     CharissaHsu	Oringinal Version
+    55                      <       ; 1.1		2012/06/25     CharissaHsu	Add User Rom Checksum Macro
+    56                      <       ; 1.2       2014/08/20     Ken Liu		Add Body:GPL81202A,GPL81201A
+    57                      <       ; 1.3       2018/01/19     Neo Chuang   Add Body:GPL812P01A
+    58                      <       ; 1.4       2018/08/07     Neo Chuang   Add Body:GPL812P01B
+    59                      <       ;==================================================================================
+    60                      <       ;==================================================================================
+    61                      <       
+    62                      <       
+    63                      <       		.IFNDEF	GPL812P01Bx
+    64                      <       			GPL812P01Bx: 	.EQU		0
+    65                      <       		.ENDIF
+    66                      <       
+    67                      <        	 
+    68                      <       .IF (GPL812P01Bx)
+    69                      <       GPL812PX		.EQU		1
+    70                      <       .ENDIF
+    71                      <       	.IFDEF	GPL812PX
+    72 00000083             <       		.PAGE0
+    73                      <         
+    74                      <       ;=================  INT/NMI Register  ================
+    75                      <       P_SRAM_Ctrl:							.EQU    $3F    
+    76                      <             
+    77                      <       ;===================  IO Register  ===================
+    78                      <       P_IO_Green_Ctrl:						.EQU    $11			; IO Green mode selection register
+    79                      <       	D_IO_GreenEn:								.EQU	   00100000B	
+    80                      <       	D_IO_GreenDis:							.EQU	   00000000B
+    81                      <       	
+    82                      <       P_IO_PortA_Dir							.EQU    $0B
+    83                      <       P_IO_PortA_Attrib:						.EQU    $03
+    84                      <       P_IO_PortA_Data:						.EQU    $07
+    85                      <       P_IO_PortA_Buffer:						.EQU    $0C
+    86                      <       P_IOA_LCDPORT_Ctrl:						.EQU    $4A			;PA[7:0]=SEG13:6
+    87                      <       P_IOA_SEGCOM_Ctrl:						.EQU    $48
+    88                      <       	D_PortA6_COM6:						.EQU    01000000B
+    89                      <       	D_PortA7_COM7:						.EQU    10000000B
+    90                      <       
+    91                      <       P_IO_PortB_Dir:							.EQU    $00
+    92                      <       P_IO_PortB_Attrib:						.EQU    $04
+    93                      <       P_IO_PortB_Data:						.EQU    $08
+    94                      <       P_IO_PortB_Buffer:						.EQU    $0D
+    95                      <       P_IO_PortB_Strobe_En:				 	.EQU    $2D
+    96                      <       
+    97                      <       P_IOB_LCDPORT_Ctrl:						.EQU    $4B			;PB[3:0]SEG5:2
+    98                      <       P_IOB_SEGCOM_Ctrl:						.EQU    $49
+    99                      <       	D_PortB0_COM0:						.EQU    00000001B
+   100                      <       	D_PortB1_COM1:						.EQU    00000010B
+   101                      <       	D_PortB2_COM2:						.EQU    00000100B
+   102                      <       	D_PortB3_COM3:						.EQU    00001000B	
+   103                      <       
+   104                      <       P_IO_PortC_Dir:							.EQU    $01
+   105                      <       P_IO_PortC_Attrib:						.EQU    $05
+   106                      <       P_IO_PortC_Data:						.EQU    $09
+   107                      <       P_IO_PortC_Buffer:						.EQU    $0E
+   108                      <       P_IO_PortC_Strobe_En:					.EQU    $2E
+   109                      <       P_IOC_LCDPORT_Ctrl:						.EQU    $4C		;PC[7:0]=SEG[5:2] ,PC[1:0]=SEG[15:14]
+   110                      <       P_IOC_SEGCOM_Ctrl						.EQU    $34
+   111                      <       	D_PortC0_COM5:						.EQU    00000001B
+   112                      <       	D_PortC1_COM4:						.EQU    00000010B
+   113                      <       	D_PortC4_COM3:						.EQU    00010000B
+   114                      <       	D_PortC5_COM2:						.EQU    00100000B
+   115                      <       	D_PortC6_COM1:						.EQU    01000000B
+   116                      <       	D_PortC7_COM0:						.EQU    10000000B
+   117                      <       
+   118                      <       P_IO_PortD_Dir:							.EQU    $02
+   119                      <       P_IO_PortD_Attrib:						.EQU    $06
+   120                      <       P_IO_PortD_Data:						.EQU    $0A
+   121                      <       P_IO_PortD_Buffer:						.EQU    $0F
+   122                      <       P_IO_PortD_Strobe_En:					.EQU    $2F
+   123                      <       P_IOD_LCDPORT_Ctrl:						.EQU    $35
+   124                      <       	D_PortD2_SEG1:						.EQU    00000100B
+   125                      <       	D_PortD3_SEG0:						.EQU    00001000B
+   126                      <       ;===================  System Register  ===================
+   127                      <       P_SYSTEM_Ctrl:							.EQU    $12						; System sleep source.
+   128                      <       	D_SYS_Sleep:						.EQU	10101010B				; System goes to sleep bit.
+   129                      <       P_SYSTEM_Green_Ctrl:         			.EQU    $17                     ; System Green mode selection register.
+   130                      <       	D_GreenDis:							.EQU	00000000B
+   131                      <       	D_GreenEn:							.EQU	01000000B
+   132                      <       ;===============   Watch Dog Register  ===============
+   133                      <       P_WDT_Flag_Clear:						.EQU	$20
+   134                      <       	D_WDT_Clear:						.EQU	10101010B
+   135                      <       
+   136                      <       ;=================  INT/NMI Register  ================
+   137                      <       P_INT_Ctrl0:							.EQU    $13							; Interrupt control.
+   138                      <       	D_INT_Ctrl0_Dis:						.EQU	  00000000B				; bit[7,5] must be fill '0'
+   139                      <       	D_CPUDiv2MHz_INT_En:          			.EQU	  00000001B				; Fosc divided 2097152 interrupt enabled bit.
+   140                      <       	D_CPUDiv32KHz_INT_En:           		.EQU	  00000010B				; Fosc divided 32768 interrupt enabled bit.
+   141                      <       	D_CPUDiv4KHz_INT_En:					.EQU	  00000100B				; Fosc divided 4096 interrupt enabled bit.
+   142                      <       	D_CPUDiv1KHz_INT_En:					.EQU	  00001000B				; Fosc divided 1024 interrupt enabled bit.
+   143                      <       	D_TM1O_INT_En:          				.EQU	  00010000B				; Timer1 overflow interrupt enabled bit.
+   144                      <       	D_TM0O_INT_En:          				.EQU	  01000000B				; Timer0 overflow interrupt enabled bit.
+   145                      <       	
+   146                      <       P_INT_Clear0:							.EQU    $14							; Interrupt Flag. Write 1 to clear interrupt flag.
+   147                      <       	D_2MHz_Clr:								.EQU	  00000001B				; Fosc divided 2M interrupt flag bit.
+   148                      <       	D_32KHz_Clr:							.EQU	  00000010B				; Fosc divided 32K interrupt flag bit.
+   149                      <       	D_4KHz_Clr:          			 	 	.EQU	  00000100B				; Fosc divided 4K interrupt flag bit.
+   150                      <       	D_1KHz_Clr:          			 	 	.EQU	  00001000B				; Fosc divided 1K interrupt flag bit.
+   151                      <       	D_TM1O_Clr:          			 	 	.EQU	  00010000B				; Timer1 overflow interrupt flag bit.
+   152                      <       	D_TM0O_Clr:          			 	 	.EQU	  01000000B				; Timer0 overflow interrupt flag bit.
+   153                      <       
+   154                      <       P_INT_Ctrl1:         				    .EQU    $15							; Interrupt control.
+   155                      <       	D_INT_Ctrl1_Dis:					  	.EQU	  00000000B	
+   156                      <       	D_TBL_INT_En:          		  			.EQU	  00010000B				; 32K Time Base low frequency interrupt	enable bit.
+   157                      <       	D_TBH_INT_En:          		  			.EQU	  00100000B				; 32K Time Base high frequency interrupt enable bit.
+   158                      <       	
+   159                      <       P_INT_Clear1:         				    .EQU    $16							; Interrupt Flag. Write 1 to clear interrupt flag.								
+   160                      <       	D_TBL_Clr:								.EQU	  00010000B				; 32K Time Base high frequency interrupt flag bit.
+   161                      <       	D_TBH_Clr:								.EQU	  00100000B				; 32K Time Base high frequency interrupt flag bit.	
+   162                      <       
+   163                      <       
+   164                      <       P_INT_Ctrl2:         				    .EQU    $18							; Interrupt control.
+   165                      <       	D_INT_Ctrl2_Dis:					  	.EQU	  00000000B				; bit[7,5] must be fill '0'
+   166                      <       	D_EXT_INT0:								.EQU	  00000001B				; External interrupt 1 enabled bit.
+   167                      <       	D_EXT_INT1:								.EQU	  00000010B				; External interrupt 0 enabled bit.
+   168                      <       	
+   169                      <       P_INT_Clear2:         				    .EQU    $19							; Interrupt flag.
+   170                      <       	D_PB0_Clr:								.EQU		00000001B			; External interrupt 0 flag bit.
+   171                      <       	D_PB1_Clr:								.EQU		00000010B			; External interrupt 1 flag bit.
+   172                      <       
+   173                      <       
+   174                      <       P_RFC_Ctrl:         				   	.EQU    $1E							; RFC function control
+   175                      <       	D_RFC0_PC4:								.EQU		00000001B			; RFC selecttion bit 0
+   176                      <       	D_RFC1_PC5:								.EQU		00000010B			; RFC selecttion bit 1
+   177                      <       	D_RFC2_PC6:								.EQU		00000100B			; RFC selecttion bit 2
+   178                      <       	D_RFCEN:								.EQU		00001000B			; RFC function enable bit
+   179                      <       	D_RFCDis:								.EQU		00000000B
+   180                      <       	
+   181                      <       
+   182                      <       ;=================  Timer Register  ==================
+   183                      <       P_TIMER_Timer0_Ctrl:					 .EQU   $21								; Timer0 control.
+   184                      <       	D_TM0Fosc:								.EQU		00000000B				; Fosc/1 as Timer0 clock.
+   185                      <       	D_TM0FoscDiv2:							.EQU		00010000B				; Fosc/2 as Timer0 clock.
+   186                      <       	D_TM0FoscDiv4:							.EQU		00100000B				; Fosc/4 as Timer0 clock.
+   187                      <       	D_TM0FoscDiv16:							.EQU		00110000B				; Fosc/16 as Timer0 clock.
+   188                      <       	D_TM0En:								.EQU		10000000B				; Timer0 Enable Selected function is Enabled.
+   189                      <       	D_TM0Dis:								.EQU		00000000B				; Timer0 Enable Selected function is Disabled.
+   190                      <       
+   191                      <       P_TIMER_Timer1_Ctrl:         			 .EQU   $22								; Timer1 control. bit0 must be fill '0'
+   192                      <       	D_TM1Fosc:								.EQU		00000000B				; Fosc/1 as Timer1 clock.
+   193                      <       	D_TM1FoscDiv4:							.EQU		00010000B				; Fosc/4 as Timer1 clock.
+   194                      <       	D_TM1FoscDiv64:							.EQU		00100000B				; Fosc/64 as Timer1 clock.
+   195                      <       	C_TM1CLK_TM0OF:							.EQU		00110000B				; clock source use Timer0 clock over flow.
+   196                      <       	D_TM1PortC7TM1Clk:						.EQU		01000000B				; Timer1 clock source from IO selection. (RFC using)
+   197                      <       	D_TM1En:								.EQU		10000000B				; Timer1 Enable Selected function is Enabled.
+   198                      <       	D_TM1Dis:								.EQU		00000000B				; Timer1 Enable Selected function is Disabled.	
+   199                      <       
+   200                      <       P_TIMER_TM0Data_LB:         			 .EQU   $23								; Write 8-bit	counter rgister in 8-bit Timer0. 
+   201                      <       																				
+   202                      <       P_TIMER_TM1Data_LB:         			 .EQU   $25								; Write low 8-bit counter register in 12-bit Timer1.(W)
+   203                      <       P_TIMER_TM1Data_HB:         			 .EQU   $26								; Write high 4-bit counter register in 12-bit Timer1.(W)
+   204                      <       
+   205                      <       P_CLK_32768_En:         				 .EQU   $2A
+   206                      <       	D_32768En:								.EQU		10000000B
+   207                      <       	D_32768Dis:								.EQU		00000000B	;bit[5,2:0] msut be fill '0'
+   208                      <       P_TIMER_TimeBase_Sel:					.EQU   $2B
+   209                      <       	D_32kStr_T2sec:							.EQU		00000000B	
+   210                      <       	D_32kStr_T4sec:							.EQU		00010000B
+   211                      <       	D_TBL2Hz:								.EQU		00000000B	
+   212                      <       	D_TBL4Hz:								.EQU		00001000B
+   213                      <       	D_TBL8Hz:								.EQU		00000100B
+   214                      <       	D_TBL16Hz:								.EQU		00001100B
+   215                      <       	D_TBH128Hz:								.EQU		00000000B
+   216                      <       	D_TBH256Hz:								.EQU		00000010B
+   217                      <       	D_TBH512Hz:								.EQU		00000001B
+   218                      <       	D_TBH1KHz:								.EQU		00000011B
+   219                      <       P_IO_Strobe_En:							.EQU   $2C                        
+   220                      <        	D_StrobeDis:							.EQU		00000000B              
+   221                      <         	D_StrobeEn:								.EQU		00000001B               
+   222                      <                       
+   223                      <       
+   224                      <       ;==============  Sleep/Wakeup Register  ==============
+   225                      <       P_WAKEUP_Ctrl:         		 			.EQU   $30   
+   226                      <       	D_KeyDis:								.EQU		00000000B
+   227                      <       	D_KeyEn:								.EQU		00000001B
+   228                      <       	D_TBLEn:								.EQU		00000010B
+   229                      <       	D_TBLDis:								.EQU		00000000B
+   230                      <       	D_TBHEn:								.EQU		00001000B
+   231                      <       	D_TBHDis:								.EQU		00000000B
+   232                      <       
+   233                      <       P_WAKEUP_Flag:         		 			.EQU   $31   
+   234                      <       	D_KEYWFC_En:							.EQU		00000001B
+   235                      <       	D_KEYWFC_Dis:							.EQU		00000000B
+   236                      <       	D_TBLWFC_En:							.EQU		00000010B
+   237                      <       	D_TBLWFC_Dis:							.EQU		00000000B
+   238                      <       	D_TBHWFC_En:							.EQU		00001000B
+   239                      <       	D_TBHWFC_Dis:							.EQU		00000000B
+   240                      <       		
+   241                      <       P_IO_PortB_WakeUpEN:						.EQU   $37 	
+   242                      <       P_IO_PortC_WakeUpEN:						.EQU   $38   
+   243                      <       P_IO_PortD_WakeUpEN:						.EQU   $39   
+   244                      <       
+   245                      <       ;==============  LCD Register  ==============
+   246                      <       P_LCD_Ctrl:					       		.EQU   $32	
+   247                      <       
+   248                      <       	D_LCDGreenMode_Dis:						.EQU		10010000B
+   249                      <       	D_LCDGreenMode_En:						.EQU		10000000B
+   250                      <       
+   251                      <       	D_LCDMode_Normal:						.EQU		00000000B
+   252                      <       	D_LCDMode_AllOn:						.EQU		00000001B
+   253                      <       	D_LCDMode_AllOff:						.EQU		00000010B
+   254                      <       	D_LCDMode_DisplayOff:					.EQU		00000011B
+   255                      <       	
+   256                      <       	D_LCDSetting_3Bias_4Duty:				.EQU		00000000B
+   257                      <       	D_LCDSetting_3Bias_5Duty:				.EQU		00000100B
+   258                      <       	D_LCDSetting_3Bias_6Duty:				.EQU		00001000B
+   259                      <       	D_LCDSetting_4Bias_8Duty:				.EQU		00001100B	
+   260                      <       	
+   261                      <       	D_LCD_VLCD2_5V:							.EQU		00000000B
+   262                      <       	D_LCD_VLCD2_4V:							.EQU		00100000B	
+   263                      <       	D_LCD_VLCD2_8V:							.EQU		01000000B	
+   264                      <       	D_LCD_VLCDVDD:							.EQU		01100000B	
+   265                      <       	
+   266                      <       ;==============  LVD function Register  ==============   
+   267                      <       P_LVD_Ctrl:					         	.EQU   $33  
+   268                      <       
+   269                      <       	D_LVDS_2_7V:							.EQU		01000000B
+   270                      <       	D_LVDS_2_1V:							.EQU		00000000B
+   271                      <       	D_LVDS_2_4V:							.EQU		00100000B
+   272                      <       	D_LVD_En:								.EQU		10000000B
+   273                      <       	D_LVD_Dis:								.EQU		00000000B
+   274                      <       ;==============  PWM function Register  ==============	
+   275                      <       P_PWM_IO_Ctrl:				.EQU    $11				
+   276                      <       	D_TX_En:								.EQU		00000000B
+   277                      <       	D_IO_En:									.EQU		00100000B
+   278                      <       	D_Driving_50mA:						.EQU		00000000B
+   279                      <       	D_Driving_100mA:					.EQU		00001000B
+   280                      <       	D_Driving_200mA:					.EQU		00010000B
+   281                      <       	D_Driving_400mA:					.EQU		00011000B
+   282                      <       P_PWM_EN:         				.EQU    $17
+   283                      <       	D_PWMEn:								.EQU		00000000B
+   284                      <       	D_PWMDis:								.EQU		01000000B	
+   285                      <       ;**********************************************************************
+   286                      <       ;ROM Checksum
+   287                      <       ;**********************************************************************
+   288                      <       
+   289                      <       D_Bank0UserRomStartAddr:		.EQU	0xE000		;0xE000 ~ 0xFFFF: User ROM Code
+   290                      <       
+   291                      <       D_Bank0UserRomEndAddr:			.EQU	0xFFF6		;0xFFF7 ~ 0xFFF9 are reserved for Generalplus used
+   292                      <       D_NMIandResetVectorStartAddr:	.EQU	0xFFFA		
+   293                      <       D_NMIandResetVectorEndAddr:		.EQU	0xFFFF
+   294                      <       
+   295                      <       
+   296                      <       ; ========================================================================================
+   297                      <       ; Macro Name	: M_UserRomChecksum
+   298                      <       ; Parameters	: None
+   299                      <       ; Return Value	: R_ChecksumResult: bit[7:0]
+   300                      <       ;				: R_ChecksumResult + 1: bit[15:8]
+   301                      <       ;				: R_ChecksumResult + 2: bit[23:16]
+   302                      <       ;				: R_ChecksumResult + 3: bit[31:24]
+   303                      <       ; Description	: Calculate user ROM area code checksum
+   304                      <       ; Destroy		: A, Y
+   305                      <       ; Example		: %M_UserRomChecksum	R_ChecksumAddrPtr, R_ChecksumResult
+   306                      <       ; ========================================================================================	
+   307                      <       %M_UserRomChecksum:	.MACRO	R_ChecksumAddrPtr, R_ChecksumResult
+   308                      <       	LDA		#0
+   309                      <       	STA		R_ChecksumResult					;Result Byte0
+   310                      <       	STA		R_ChecksumResult + 1				;Result Byte1
+   311                      <       	STA		R_ChecksumResult + 2				;Result Byte2
+   312                      <       	STA		R_ChecksumResult + 3				;Result Byte3
+   313                      <       ;=================== Bank 0 ==================================================	
+   314                      <       	LDA		#.HIGH.D_Bank0UserRomStartAddr
+   315                      <       	STA		R_ChecksumAddrPtr + 1				; Start High Byte
+   316                      <       	LDA		#.LOW.D_Bank0UserRomStartAddr
+   317                      <       	STA		R_ChecksumAddrPtr					;Start Low Byte
+   318                      <       	LDY		#0
+   319                      <       L_ChecksumLoop1?
+   320                      <       	LDA		#D_WDT_Clear
+   321                      <       	STA		P_WDT_Flag_Clear	
+   322                      <       	CLC
+   323                      <       	LDA		(R_ChecksumAddrPtr),Y
+   324                      <       	ADC		R_ChecksumResult					;Result Low Byte
+   325                      <       	STA		R_ChecksumResult					;Result Low Byte
+   326                      <       	BCC		L_CheckAddress1?
+   327                      <       	INC		R_ChecksumResult + 1				;Result Byte1
+   328                      <       	BNE		L_CheckAddress1?
+   329                      <       	INC		R_ChecksumResult + 2				;Result Byte3
+   330                      <       	BNE		L_CheckAddress1?
+   331                      <       	INC		R_ChecksumResult + 3				;Result Byte4
+   332                      <       		
+   333                      <       L_CheckAddress1?:
+   334                      <       	LDA		R_ChecksumAddrPtr + 1				;Address Pointer HB
+   335                      <       	CMP		#.HIGH.D_Bank0UserRomEndAddr		;End High Byte
+   336                      <       	BNE		L_IncreaseAdd1?
+   337                      <       	
+   338                      <       	LDA		R_ChecksumAddrPtr					;Address Pointer LB
+   339                      <       	CMP		#.LOW.D_Bank0UserRomEndAddr			;End Low Byte
+   340                      <       	BEQ		L_ExitRomSum1?
+   341                      <       	
+   342                      <       L_IncreaseAdd1?:
+   343                      <       	INC		R_ChecksumAddrPtr					;Address Pointer LB
+   344                      <       	BNE		L_ChecksumLoop1?
+   345                      <       	INC		R_ChecksumAddrPtr + 1				;Address Pointer HB
+   346                      <       	JMP		L_ChecksumLoop1?	
+   347                      <       		
+   348                      <       L_ExitRomSum1?:	
+   349                      <       ;===================NMI & Reset Vector==================================================		
+   350                      <       	LDA		#.HIGH.D_NMIandResetVectorStartAddr
+   351                      <       	STA		R_ChecksumAddrPtr + 1				; Start High Byte
+   352                      <       	LDA		#.LOW.D_NMIandResetVectorStartAddr
+   353                      <       	STA		R_ChecksumAddrPtr				;Start Low Byte
+   354                      <       		
+   355                      <       L_ChecksumLoop2?
+   356                      <       	LDA		#D_WDT_Clear
+   357                      <       	STA		P_WDT_Flag_Clear
+   358                      <       	CLC
+   359                      <       	LDA		(R_ChecksumAddrPtr),Y
+   360                      <       	ADC		R_ChecksumResult					;Result Low Byte
+   361                      <       	STA		R_ChecksumResult					;Result Low Byte
+   362                      <       	BCC		L_CheckAddress2?
+   363                      <       	INC		R_ChecksumResult + 1				;Result Byte2
+   364                      <       	BNE		L_CheckAddress2?
+   365                      <       	INC		R_ChecksumResult + 2				;Result Byte3
+   366                      <       	BNE		L_CheckAddress2?
+   367                      <       	INC		R_ChecksumResult + 3				;Result Byte4
+   368                      <       		
+   369                      <       L_CheckAddress2?:
+   370                      <       	LDA		R_ChecksumAddrPtr + 1				;Address Pointer HB
+   371                      <       	CMP		#.HIGH.D_NMIandResetVectorEndAddr	;End High Byte
+   372                      <       	BNE		L_IncreaseAdd2?
+   373                      <       	
+   374                      <       	LDA		R_ChecksumAddrPtr					;Address Pointer LB
+   375                      <       	CMP		#.LOW.D_NMIandResetVectorEndAddr	;End Low Byte
+   376                      <       	BEQ		L_EndChecksum?
+   377                      <       	
+   378                      <       L_IncreaseAdd2?:
+   379                      <       	INC		R_ChecksumAddrPtr					;Address Pointer LB
+   380                      <       	BNE		L_ChecksumLoop2?
+   381                      <       	INC		R_ChecksumAddrPtr + 1				;Address Pointer HB
+   382                      <       	JMP		L_ChecksumLoop2?	
+   383                      <       	
+   384                      <       L_EndChecksum?:
+   385                      <       
+   386                      <       	.ENDM
+   387                      <       
+   388                      <       EV_Simualtion		.EQU	0
+   389                      <       OTP_BurnIn			.EQU	1
+   390                      <       GPL812P01Bx_Mode	.EQU	OTP_BurnIn
+   391                      <       
+   392                      <       	
+   393                      <       			.ENDIF
+   394                      <       			.ENDIF
+   395                      <       	.ENDIF
+   396                              .INCLUDE	"GPL812P01B_LCM_Driver\GPL812P01B_LCM_Driver.inc"
+   397                      <       .IFNDEF _GPL812P01B_LCM_Driver_inc_
+   398                      <       _GPL812P01B_LCM_Driver_inc_:    .EQU    1
+   399                      <       .if	(GPL812P01Bx_Mode=EV_Simualtion)
+   400                      <       ; =======================================================================================
+   401                      <       ; Function name : F_LCM_Enable
+   402                      <       ; Purpose       : Enable LCM Driver ,Setting Data/CLK pin as Output Low
+   403                      <       ; Parameter     : 
+   404                      <       ; Return        : 
+   405                      <       ; Destroy       : A 
+   406                      <       ; ======================================================================================  
+   407                      <       .extern		F_LCM_Enable
+   408                      <       ; =======================================================================================
+   409                      <       ; Function name : F_LCM_Write_OneReg
+   410                      <       ; Purpose       : 
+   411                      <       ; Parameter     : A:Address Y:Data
+   412                      <       ; Return        : None ; Check sum = length(=2) + address + data
+   413                      <       ; Destroy       : A,X
+   414                      <       ; ======================================================================================
+   415                      <       .extern		F_LCM_Write_OneReg
+   416                      <       ; =======================================================================================
+   417                      <       ; Function name : F_LCM_Write_NReg
+   418                      <       ; Purpose       : 
+   419                      <       ; Parameter     : LCM_Buffer_Ptr
+   420                      <       ; Return        : None ; Check sum = R_LCM_DataLength + address1 + data1 + 
+   421                      <       ;                       	          address2 + data2 + ....  + addressN + dataN
+   422                      <       ; Destroy       : A,Y,X
+   423                      <       ; ======================================================================================
+   424                      <       .extern		F_LCM_Write_NReg
+   425                      <       ; =======================================================================================
+   426                      <       ; Function name : F_LCM_Write_LCDData
+   427                      <       ; Purpose       : 
+   428                      <       ; Parameter     : LCM_Buffer_Ptr
+   429                      <       ; Return        : None ; Check sum = N + (0x50~0x50+N)
+   430                      <       ; Destroy       : A,X,Y 
+   431                      <       ; ======================================================================================
+   432                      <       .extern		F_LCM_Write_LCDData
+   433                      <       
+   434                      <       .external	.PAGE0	LCM_Buffer_Ptr ;LCM data buffer address
+   435                      <       
+   436                      <       .extern		LCM_Data_Buffer		;Max Size is acording R_LCM_DataLength+3
+   437                      <       .extern		R_LCM_DataLength	;record LCM Command of DataLength
+   438                      <       
+   439                      <       .extern    R_128Hz_Count
+   440                      <       
+   441                      <       .endif
+   442                      <       .endif
+   443                              .INCLUDE	"LCD_Define.inc"
+   444                      <       .IFNDEF _LCD_Define_inc_
+   445                      <       _LCD_Define_inc_:    .EQU    1
+   446                      <       
+   447                      <       ;==================================================================================
+   448                      <       ; The information contained herein is the exclusive property of
+   449                      <       ; Generalplus Technology Co. And shall not be distributed, reproduced,
+   450                      <       ; or disclosed in whole in part without prior written permission.
+   451                      <       ;       (C) COPYRIGHT 2009   Generalplus TECHNOLOGY CO.                            
+   452                      <       ;                   ALL RIGHTS RESERVED
+   453                      <       ; The entire notice above must be reproduced on all authorized copies.
+   454                      <       ;==================================================================================
+   455                      <       ;==================================================================================
+   456                      <       ; Name                  : LCD_Define.inc
+   457                      <       ; Applied Body          : 
+   458                      <       ; Programmer            : 
+   459                      <       ; Description           : 
+   460                      <       ; History version       : v1.0.0
+   461                      <       ; 1.0.0     2017/01/08  Neo    first issue
+   462                      <       ;==================================================================================
+   463                      <       D_LCD_Address			.EQU	0x0050
+   464                      <       D_SegNum				.EQU	16				;Max value = 16		,4x16,6x14,8x12
+   465                      <       D_ComNum				.EQU	5				;Max value = 8
+   466                      <       D_LCDDataSize			.EQU	D_ComNum*2		;LCD RAM Buffer Size
+   467                      <       ;---------------------------------------------------------------------------------------------
+   468                      <       D_LCD_VLCD					.EQU	D_LCD_VLCDVDD
+   469                      <       									;D_LCD_VLCDVDD	
+   470                      <       									;D_LCD_VLCD2_5V
+   471                      <       									;D_LCD_VLCD2_4V
+   472                      <       									;D_LCD_VLCD2_8V
+   473                      <       D_LCD_BiasDuty				.EQU	D_LCDSetting_3Bias_5Duty
+   474                      <       									;D_LCDSetting_3Bias_5Duty
+   475                      <       									;D_LCDSetting_3Bias_6Duty
+   476                      <       									;D_LCDSetting_4Bias_8Duty
+   477                      <       D_LCD_GreenMode				.EQU	D_LCDGreenMode_En
+   478                      <       									;D_LCDGreenMode_Dis
+   479                      <       
+   480                      <       D_LCD_Setting				.EQU	D_LCD_VLCD+D_LCD_BiasDuty+D_LCD_GreenMode
+   481                      <       ; ---------------------- PA0~7=Seg6~13 ----------------------
+   482                      <       D_LCD_PortA_Ctrl       .EQU    11111111B    ; 
+   483                      <       D_LCD_PortA_COMSEG     .EQU    00000000B    ; PA7~6=Seg13~12
+   484                      <       
+   485                      <       ; ---------------------- PortBPB0~3=Com0~3 ----------------------
+   486                      <       D_LCD_PortB_Ctrl       .EQU    00001111B    ; 
+   487                      <       D_LCD_PortB_COMSEG     .EQU    00001111B    ; PB3~0=Com3~0
+   488                      <       
+   489                      <       ; ---------------------- PortCC0=Seg14 ----------------------
+   490                      <       D_LCD_PortC_Ctrl       .EQU    00000011B    ;
+   491                      <       D_LCD_PortC_COMSEG     .EQU    00000010B    ; PC1=Com4
+   492                      <       
+   493                      <       ; ---------------------- PortD---------------------
+   494                      <       D_LCD_PortD_Ctrl       .EQU    00000000B    ; PDΪIO
+   495                      <       
+   496                      <       ;D_LCD_PortA_Ctrl			.EQU	11111111B		;set PA[7:0] as LCD function
+   497                      <       ;D_LCD_PortA_COMSEG			.EQU	00000000B		;Set PA[7:6] as segment output
+   498                      <       ;D_LCD_PortB_Ctrl			.EQU	00001111B		;Set PB[3:0] as LCD function
+   499                      <       ;D_LCD_PortB_COMSEG			.EQU	00000000B		;Set PB[3:0] as segment output
+   500                      <       ;D_LCD_PortC_Ctrl			.EQU	11100000B		;Set PortC[7:5] as LCD function
+   501                      <       ;D_LCD_PortC_COMSEG			.EQU    11100000B		;Set PC[7:5] as common  output 
+   502                      <       ;D_LCD_PortD_Ctrl			.EQU	00000000B		;set PD[3:2] as normal IO	
+   503                      <       
+   504                      <       .ENDIF
+   505                      <         
+   506                              
+   507                              ;==================================================================================
+   508                              ;Constant Define Area
+   509                              ;==================================================================================
+   510                              
+   511                              ;==================================================================================
+   512                              ; Function External declare area
+   513                              ;==================================================================================
+   514                              
+   515                              ;==================================================================================
+   516                              ; Variable Public area
+   517                              ;==================================================================================
+   518                              .PUBLIC	LCD_DPRAM_Ptr
+   519                              .PUBLIC	LCD_DPRAM_Buffer
+   520                              .PUBLIC	LCD_RAM_Ptr
+   521                              ;==================================================================================
+   522                              ; Variable RAM declare area
+   523                              ;==================================================================================
+   524 000000B9                     LCD_ZRAM:    .SECTION      .PAGE0
+   525 000000B9 FF FF               LCD_DPRAM_Ptr		.DS		2
+   526 000000BB FF FF               LCD_RAM_Ptr			.DS		2
+   527                              .ENDS
+   528 000000BD                     LCD_NRAM:    .SECTION
+   529 000000BD FF FF FF FF         LCD_DPRAM_Buffer	.DS		D_LCDDataSize
+                FF FF FF FF
+                FF FF      
+   530                              .ENDS
+   531                              
+   532                              
+   533                              ;=============================================                                  
+   534                              .public F_LCD_Clear
+   535                              .public _F_LCD_Clear
+   536                              
+   537                              .public F_LCD_Intital
+   538                              .public _F_LCD_Intital
+   539                              
+   540                              .public F_LCD_Close
+   541                              .public _F_LCD_Close
+   542                              .public	F_LCD_PutRAMToDPRAM
+   543                              .public	_F_LCD_PutRAMToDPRAM
+   544                              
+   545                              ;=============================================       
+   546 0000F0CE                     LCD_Code:    .SECTION
+   547                              
+   548                              
+   549                              ; =======================================================================================
+   550                              ; Function name : F_LCD_Intital
+   551                              ; Purpose       : VLCD=VDD ,1/3 bias , 1/4 Duty 
+   552                              ;				PB[3:0] as segment output
+   553                              ;				PC[7:5] as common  output
+   554                              ;				PB[6:0] as segment output
+   555                              ; Parameter     : 
+   556                              ; Return        : 
+   557                              ; Destroy       : A,X,Y 
+   558                              ; ======================================================================================  
+   559 0000F0CE                     F_LCD_Intital:
+   560 0000F0CE                     _F_LCD_Intital:
+   561                              		.if	(GPL812P01Bx_Mode=EV_Simualtion)
+   562                              			LDA		#P_LCD_Ctrl		;Register
+   563                              			LDY		#D_LCD_Setting						
+   564                              			JSR		F_LCM_Write_OneReg		;P_LCD_Ctrl=#D_LCD_Setting
+   565                              			;--------------------------------------------------------------	
+   566                              			LDA		#.LOW.LCM_Data_Buffer
+   567                              			STA		LCM_Buffer_Ptr	
+   568                              			LDA		#.high.LCM_Data_Buffer
+   569                              			STA		LCM_Buffer_Ptr+1
+   570                              			LDY		#0x00			
+   571                              			;------------------------------------------
+   572                              			LDA		#P_IOB_LCDPORT_Ctrl
+   573                              			STA		(LCM_Buffer_Ptr),Y
+   574                              			INY			
+   575                              			LDA		#D_LCD_PortB_Ctrl
+   576                              			STA		(LCM_Buffer_Ptr),Y
+   577                              			INY			
+   578                              			;-------------------------------------------------
+   579                              			LDA		#P_IOB_SEGCOM_Ctrl	
+   580                              			STA		(LCM_Buffer_Ptr),Y
+   581                              			INY			
+   582                              			LDA		#D_LCD_PortB_COMSEG
+   583                              			STA		(LCM_Buffer_Ptr),Y
+   584                              			INY
+   585                              			;--------------------------------------------------------------			
+   586                              			LDA		#P_IOC_LCDPORT_Ctrl	
+   587                              			STA		(LCM_Buffer_Ptr),Y
+   588                              			INY			
+   589                              			LDA		#D_LCD_PortC_Ctrl
+   590                              			STA		(LCM_Buffer_Ptr),Y			
+   591                              			INY	
+   592                              			LDA		#P_IOC_SEGCOM_Ctrl	
+   593                              			STA		(LCM_Buffer_Ptr),Y
+   594                              			INY			
+   595                              			LDA		#D_LCD_PortC_COMSEG
+   596                              			STA		(LCM_Buffer_Ptr),Y	
+   597                              			INY
+   598                              			;-------------------------------------------------
+   599                              			LDA		#P_IOA_LCDPORT_Ctrl
+   600                              			STA		(LCM_Buffer_Ptr),Y
+   601                              			INY			
+   602                              			LDA		#D_LCD_PortA_Ctrl
+   603                              			STA		(LCM_Buffer_Ptr),Y
+   604                              			INY			
+   605                              			;-------------------------------------------------			
+   606                              			LDA		#P_IOA_SEGCOM_Ctrl
+   607                              			STA		(LCM_Buffer_Ptr),Y
+   608                              			INY			
+   609                              			LDA		#D_LCD_PortA_COMSEG
+   610                              			STA		(LCM_Buffer_Ptr),Y
+   611                              			INY			
+   612                              			;-------------------------------------------------
+   613                              			LDA		#P_IOD_LCDPORT_Ctrl
+   614                              			STA		(LCM_Buffer_Ptr),Y
+   615                              			INY			
+   616                              			LDA		#D_LCD_PortD_Ctrl
+   617                              			STA		(LCM_Buffer_Ptr),Y
+   618                              			INY			
+   619                              			;-------------------------------------------------			
+   620                              			TYA
+   621                              			STA		R_LCM_DataLength		
+   622                              			JSR		F_LCM_Write_NReg	;address:LCM_Data_Buffer	
+   623                              	.else
+   624                              			
+   625 0000F0CE A9 E4               		LDA		#D_LCD_Setting
+   626 0000F0D0 85 32               		STA		P_LCD_Ctrl
+   627                              		
+   628 0000F0D2 A9 0F               		LDA		#D_LCD_PortB_Ctrl
+   629 0000F0D4 85 4B               		STA		P_IOB_LCDPORT_Ctrl
+   630 0000F0D6 A9 0F               		LDA		#D_LCD_PortB_COMSEG
+   631 0000F0D8 85 49               		STA		P_IOB_SEGCOM_Ctrl
+   632                              		
+   633 0000F0DA A9 03               		LDA		#D_LCD_PortC_Ctrl
+   634 0000F0DC 85 4C               		STA		P_IOC_LCDPORT_Ctrl
+   635 0000F0DE A9 02               		LDA		#D_LCD_PortC_COMSEG
+   636 0000F0E0 85 34               		STA		P_IOC_SEGCOM_Ctrl
+   637                              		
+   638 0000F0E2 A9 FF               		LDA		#D_LCD_PortA_Ctrl
+   639 0000F0E4 85 4A               		STA		P_IOA_LCDPORT_Ctrl
+   640 0000F0E6 A9 00               		LDA		#D_LCD_PortA_COMSEG
+   641 0000F0E8 85 48               		STA		P_IOA_SEGCOM_Ctrl
+   642                              
+   643 0000F0EA A9 00               		LDA		#D_LCD_PortD_Ctrl
+   644 0000F0EC 85 35               		STA		P_IOD_LCDPORT_Ctrl		
+   645                              	.endif	
+   646 0000F0EE 60                  			RTS	
+   647                              
+   648                              ; =======================================================================================
+   649                              ; Function name : F_LCD_Close
+   650                              ; Purpose       : LCD interface Close
+   651                              ; Parameter     : 
+   652                              ; Return        : 
+   653                              ; Destroy       : A 
+   654                              ; ======================================================================================   
+   655 0000F0EF                     F_LCD_Close:
+   656 0000F0EF                     _F_LCD_Close:
+   657                              		.if	(GPL812P01Bx_Mode=EV_Simualtion)
+   658                              			LDA		#P_LCD_Ctrl
+   659                              			LDY		#D_LCDMode_DisplayOff		
+   660                              			JSR		F_LCM_Write_OneReg
+   661                              		.ELSE
+   662 0000F0EF A9 03               			LDA		#D_LCDMode_DisplayOff
+   663 0000F0F1 85 32               			STA		P_LCD_Ctrl
+   664                              		.ENDIF
+   665 0000F0F3 60                  			RTS	
+   666                              ; =======================================================================================
+   667                              ; Function name : F_LCD_Clear
+   668                              ; Purpose       : Clear LCD DPRAM
+   669                              ; Parameter     : A:LCD data
+   670                              ; Return        : 
+   671                              ; Destroy       : A,Y 
+   672                              ; ======================================================================================  
+   673 0000F0F4                     F_LCD_Clear:	
+   674 0000F0F4                     _F_LCD_Clear:
+   675 0000F0F4 AA                  	TAX
+   676 0000F0F5 A9 BD               	LDA		#.LOW.LCD_DPRAM_Buffer
+   677 0000F0F7 85 B9               	STA		LCD_DPRAM_Ptr	
+   678 0000F0F9 A9 00               	LDA		#.high.LCD_DPRAM_Buffer
+   679 0000F0FB 85 BA               	STA		LCD_DPRAM_Ptr+1
+   680 0000F0FD A0 00               	LDY		#0x00
+   681 0000F0FF 8A                  	TXA
+   682 0000F100                     L_Clear?:	
+   683 0000F100 91 B9               	STA		(LCD_DPRAM_Ptr),Y
+   684 0000F102 C8                  	INY
+   685 0000F103 C0 0A               	CPY		#D_LCDDataSize		
+   686 0000F105 D0 F9               	BNE		L_Clear?
+   687 0000F107 20 0B F1            	JSR		F_LCD_PutRAMToDPRAM		
+   688                              
+   689 0000F10A 60                  	RTS
+   690                              
+   691                              
+   692                              ; =======================================================================================
+   693                              ; Function name : F_LCD_PutRAMToDPRAM
+   694                              ; Purpose       : Put RAM Buffer to DPRAM(0x50~0x5F)
+   695                              ; Parameter     : 
+   696                              ; Return        : 
+   697                              ; Destroy       : A,X,Y 
+   698                              ; ======================================================================================  
+   699 0000F10B                     F_LCD_PutRAMToDPRAM:	
+   700 0000F10B                     _F_LCD_PutRAMToDPRAM:	
+   701                              	.if	(GPL812P01Bx_Mode=EV_Simualtion)
+   702                              		LDA		#.LOW.LCD_DPRAM_Buffer
+   703                              		STA		LCM_Buffer_Ptr	
+   704                              		LDA		#.high.LCD_DPRAM_Buffer
+   705                              		STA		LCM_Buffer_Ptr+1
+   706                              		JSR		F_LCM_Write_LCDData
+   707                              	.else
+   708                              ;		LDA		#.LOW.D_LCD_Address
+   709                              ;		STA		LCD_DPRAM_Ptr	
+   710                              ;		LDA		#.high.D_LCD_Address
+   711                              ;		STA		LCD_DPRAM_Ptr+1
+   712                              		
+   713                              ;		LDA		#.LOW.LCD_DPRAM_Buffer
+   714                              ;		STA		LCD_RAM_Ptr	
+   715                              ;		LDA		#.high.LCD_DPRAM_Buffer
+   716                              ;		STA		LCD_RAM_Ptr+1	
+   717                              ;		
+   718                              ;		LDY		#0x00
+   719                              ;		LDX		#0x00
+   720                              ;	L_loop?:	
+   721                              ;		LDA		(LCD_RAM_Ptr),Y
+   722                              ;		STA		(LCD_DPRAM_Ptr,X)
+   723                              ;		INY
+   724                              ;		INC		LCD_DPRAM_Ptr
+   725                              ;		CPY		#D_LCDDataSize
+   726                              ;		BNE		L_loop?
+   727                              		.endif	
+   728 0000F10B 60                  	RTS	
+   729                              .ends
+0 Error(s), 0 Warning(s).
+

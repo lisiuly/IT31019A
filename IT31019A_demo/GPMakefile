@@ -1,0 +1,206 @@
+#####################################################################
+#
+#	Created by 6502 ASM Project		2026-4-20 09:19:43
+#
+#####################################################################
+
+TOOLSDIR		= C:\PROGRA~2\GENERA~1\GPIDE_~1.8\Tools\Compiler\6502
+PROJECTDIR		= E:\project\IT31019A_带天气温湿度钟\IT31019A\IT31019A_demo_2.9
+BODYPATH		= C:\Program Files (x86)\Generalplus\GPIDE_6502 1.2.8\gplus\project\Body\6502\GPL812
+OUTPUTDIR		= .\Release
+IMDIR			= .\Release
+
+BODYSERIES		= GPL812
+INCLUDEPATH		= -I "$(PROJECTDIR)" 
+ASMCONF			= -C "$(BODYPATH)\\.\ASM\GPL812_ASM.conf"
+CHIPINFO		= "$(BODYPATH)\\.\ChipInformation\GPL812P01Bx_ChipInfo.conf"
+ASMFLAG			= -b $(CHIPINFO) -p $(BODYSERIES)_SERIES -p INS_LIB_NOT_EXIST -Tn -l -d -s -SC $(INCLUDEPATH)
+ASMIRPCHECKFLG	= -Mpseudo
+
+ASM				= "$(TOOLSDIR)\6502_Asm.exe"
+ASMIRPCHECK		= "$(TOOLSDIR)\6502_AsmIRPatternCheck.exe"
+RESERVEDAREA	= "$(TOOLSDIR)\6502_ReservedArea.exe"
+MASKOPTION		= "$(TOOLSDIR)\6502_MaskOption.exe"
+INITIALTOOL		= "$(TOOLSDIR)\6502_InitialTool.exe"
+RESCONV			= "$(TOOLSDIR)\6502_ResConverter.exe"
+LINK			= "$(TOOLSDIR)\6502_Linker.exe"
+RM				= del /F 1>NUL 2>NUL
+PROGDATAGEN		= "$(TOOLSDIR)\6502_TableGen.exe"
+ALLOCATOR		= "$(TOOLSDIR)\6502_Allocator.exe"
+LINKSCRIPTGEN	= "$(TOOLSDIR)\6502_LinkerScriptGenerator.exe"
+REPORT			= "$(TOOLSDIR)\6502_Reporter.exe"
+PDFCMSHEET      = "$(TOOLSDIR)\GPePDFConfirmSheet.exe"
+MAKEDIR			= mkdir
+ECHO			= @echo //-----------------------------------------------------------------------
+
+CMSFILE         = $(OUTPUTDIR)\IT31019A.cms
+PDFCMFILE       = $(OUTPUTDIR)\IT31019A_ConfirmSheet.pdf
+PDFCONFIRMSHEETTEMPLATE = C:\PROGRA~2\GENERA~1\GPIDE_~1.8\gplus\project\CONFIR~1\6502\ePDF\Fake.pdf
+
+OVERWRITELIK	= TRUE
+
+BINFILE			= ".\Release\IT31019A.bin"
+
+OBJFILES		= \
+	".\RELEASE\STARTUP.OBJ"\
+	".\RELEASE\INT_VEC.OBJ"\
+	".\RELEASE\GPL812P01B_LCM_DRIVER.OBJ"\
+	".\RELEASE\GPL812P01B_LCD.OBJ"\
+	".\RELEASE\RFCCALCULATE.OBJ"\
+	".\RELEASE\RFCDRIVER.OBJ"\
+	".\RELEASE\RFC.OBJ"\
+	".\RELEASE\DISPLAY.OBJ"\
+	".\RELEASE\KEY.OBJ"
+
+OUTPUTFILES		= "$(IMDIR)\*.resobj" \
+				  "$(IMDIR)\*.asm" \
+				  "$(IMDIR)\*.lst" \
+				  "$(IMDIR)\*.obj" \
+				  "$(IMDIR)\*.lib" \
+				  "$(IMDIR)\*.tab" \
+				  "$(IMDIR)\Res_Tbl.obj.asm" \
+				  "$(OUTPUTDIR)\IT31019A.sym" \
+				  "$(OUTPUTDIR)\IT31019A.map" \
+				  "$(OUTPUTDIR)\IT31019A.sbms" \
+				  "$(OUTPUTDIR)\IT31019A.sbm" \
+				  "$(OUTPUTDIR)\IT31019A.s37" \
+				  "$(OUTPUTDIR)\IT31019A.hdb" \
+				  "$(OUTPUTDIR)\IT31019A.rpt" \
+ 				  "$(OUTPUTDIR)\IT31019A.cms" \
+				  "$(OUTPUTDIR)\IT31019A_ConfirmSheet.pdf" \
+				  "$(OUTPUTDIR)\IT31019A_ConfirmSheet.html" \
+				  "$(OUTPUTDIR)\IT31019A.elf" \
+				  "$(OUTPUTDIR)\IT31019A_AIRP.rpt" \
+				  "$(OUTPUTDIR)\IT31019A_Report.html" \
+				  "$(OUTPUTDIR)\IT31019A_Report_MID.html" \
+				  "$(OUTPUTDIR)\IT31019A_Report_MEM.html"
+
+RESDB			= ".\IT31019A.qpcres"
+PROGDB			= ".\IT31019A.qpcact"
+
+RESERVEDAREACFG	= ".\ReservedArea.cfg"
+MASKOPTIONCFG	= ".\MaskOption.cfg"
+INITIALTOOCFG	= ".\InitialValue.cfg"
+BININFOFILE		= "$(TOOLSDIR)\BinInfo\BinInfo.conf"
+
+#-------------------------------------------------------------------------
+# Assmble *.asm to *.obj
+#-------------------------------------------------------------------------
+".\RELEASE\STARTUP.OBJ" : ".\STARTUP.ASM" ".\GPL812P01B.INC" ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.INC" ".\LCD\GPL812P01B_LCD.INC" ".\INCLUDE\MACRO.INC" ".\INCLUDE\KEY.INC" ".\INCLUDE\DISPLAY.INC" ".\RFC\RFC_USER.INC" ".\RFC\RFCDRIVER.INC" ".\RFC\RFCCALCULATE.INC" ".\RFC\RFCDEFINE.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\STARTUP.OBJ" ".\Startup.asm"
+	$(ECHO)
+".\RELEASE\INT_VEC.OBJ" : ".\INT_VEC.ASM" ".\GPL812P01B.INC" ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.INC" ".\INCLUDE\PROJECT.INC" ".\INCLUDE\MACRO.INC" ".\INCLUDE\KEY.INC" ".\RFC\RFC_USER.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\INT_VEC.OBJ" ".\Int_Vec.asm"
+	$(ECHO)
+".\RELEASE\GPL812P01B_LCM_DRIVER.OBJ" : ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.ASM" ".\GPL812P01B.INC" ".\LCD\LCD_DEFINE.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\GPL812P01B_LCM_DRIVER.OBJ" ".\GPL812P01B_LCM_Driver\GPL812P01B_LCM_Driver.asm"
+	$(ECHO)
+".\RELEASE\GPL812P01B_LCD.OBJ" : ".\LCD\GPL812P01B_LCD.ASM" ".\GPL812P01B.INC" ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\GPL812P01B_LCD.OBJ" ".\LCD\GPL812P01B_LCD.asm"
+	$(ECHO)
+".\RELEASE\RFCCALCULATE.OBJ" : ".\RFC\RFCCALCULATE.ASM" ".\GPL812P01B.INC" ".\.\RFC\RFC.INC" ".\.\RFC\RFCDRIVER.INC" ".\.\RFC\RFCDEFINE.INC" ".\INCLUDE\DISPLAY.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\RFCCALCULATE.OBJ" ".\RFC\RfcCalculate.ASM"
+	$(ECHO)
+".\RELEASE\RFCDRIVER.OBJ" : ".\RFC\RFCDRIVER.ASM" ".\GPL812P01B.INC" ".\.\RFC\RFCDEFINE.INC" ".\.\RFC\RFCCALCULATE.INC" ".\INCLUDE\MACRO.INC" ".\INCLUDE\KEY.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\RFCDRIVER.OBJ" ".\RFC\RfcDriver.ASM"
+	$(ECHO)
+".\RELEASE\RFC.OBJ" : ".\RFC\RFC.ASM" ".\.\RFC\RFCDRIVER.INC" ".\.\RFC\RFCCALCULATE.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\RFC.OBJ" ".\RFC\rfc.asm"
+	$(ECHO)
+".\RELEASE\DISPLAY.OBJ" : ".\INCLUDE\DISPLAY.ASM" ".\GPL812P01B.INC" ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.INC" ".\LCD\GPL812P01B_LCD.INC" ".\INCLUDE\PROJECT.INC" ".\INCLUDE\MACRO.INC" ".\INCLUDE\KEY.INC" ".\RFC\RFC.INC" ".\RFC\RFCCALCULATE.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\DISPLAY.OBJ" ".\include\Display.asm"
+	$(ECHO)
+".\RELEASE\KEY.OBJ" : ".\INCLUDE\KEY.ASM" ".\GPL812P01B.INC" ".\GPL812P01B_LCM_DRIVER\GPL812P01B_LCM_DRIVER.INC" ".\LCD\GPL812P01B_LCD.INC" ".\INCLUDE\PROJECT.INC" ".\INCLUDE\MACRO.INC" ".\INCLUDE\DISPLAY.INC"
+	$(ASM) $(ASMFLAG) -o ".\Release\KEY.OBJ" ".\include\key.asm"
+	$(ECHO)
+
+
+.SUFFIXES : .asm .obj
+
+.PHONY : all
+all : preBuild outputdir resconvert tablegen compileobj asmirpcheck preLink linker postLink maskoptions reporter postBuild
+
+.PHONY : clean
+clean :
+	-if not exist "${IMDIR}\$(NULL)" ${MAKEDIR} "${IMDIR}"
+	-if not exist "${OUTPUTDIR}\$(NULL)" ${MAKEDIR} "${OUTPUTDIR}"
+	$(RM)  $(BINFILE)
+	$(RM)  $(OUTPUTFILES)
+	$(ECHO)
+	
+.PHONY : build	
+build: 	build_init all
+	
+.PHONY : rebuild	
+rebuild: clean rebuild_init all	
+	
+build_init:	
+	$(INITIALTOOL) -R $(RESDB) -P $(PROGDB) -F $(INITIALTOOCFG) -B $(CHIPINFO) -T Asm -A Reflash
+rebuild_init:
+	$(INITIALTOOL) -R $(RESDB) -P $(PROGDB) -F $(INITIALTOOCFG) -B $(CHIPINFO) -T Asm -A Create
+	
+outputdir:
+	if not exist "$(OUTPUTDIR)\$(NULL)" mkdir "$(OUTPUTDIR)"
+	if not exist "$(IMDIR)\$(NULL)" mkdir "$(IMDIR)"
+	$(ECHO)
+	
+.PHONY : resconvert
+resconvert : 
+	$(RESERVEDAREA) -D $(RESDB) -R $(RESERVEDAREACFG)
+	$(ECHO)
+	$(RESCONV) -R $(RESDB) -P $(PROGDB) $(ASMCONF)  -O "$(PROJECTDIR)\\$(IMDIR)" -B $(BODYSERIES) $(INCLUDEPATH) -CP "$(PROJECTDIR)\resource.cfp" -H No
+	$(ECHO)
+
+tablegen :
+	$(PROGDATAGEN) -T GP_ASM -R $(RESDB) -S CODE -O "$(IMDIR)"
+	$(ECHO)
+	$(ALLOCATOR) -R $(RESDB) -C $(CHIPINFO)
+	$(ECHO)
+
+.PHONY : compileobj
+compileobj : $(OBJFILES) rmbinfile	
+ifdef OVERWRITELIK
+	$(LINKSCRIPTGEN) -I ".\LinkerScriptParam"
+	$(ECHO)
+endif
+
+asmirpcheck :
+	$(ASMIRPCHECK) $(ASMIRPCHECKFLG)
+	
+rmbinfile : 
+	$(RM) $(BINFILE)
+	$(ECHO)
+	
+linker :
+	$(LINK) ".\_Prog_.lik"
+	$(ECHO)
+
+maskoptions:	
+	$(MASKOPTION) -i $(BINFILE) -o $(BINFILE) -ePDFrpt "$(CMSFILE)" -bf $(CHIPINFO) -m $(MASKOPTIONCFG) -bi $(BININFOFILE)
+	$(ECHO)
+	$(PDFCMSHEET) -T "$(PDFCONFIRMSHEETTEMPLATE)" -P "$(CMSFILE)" -O "$(PDFCMFILE)"
+	@echo =
+	$(ECHO)	
+	
+.PHONY : reporter
+reporter : 
+	$(REPORT) -Raqe $(RESDB) -Pfst $(PROGDB) -O "$(OUTPUTDIR)\IT31019A_Report" -H -M "$(OUTPUTDIR)\IT31019A.map" -F $(CHIPINFO)
+	$(ECHO)
+	
+preBuild:
+	@echo Pre-Build Event:
+	
+	$(ECHO)
+preLink:
+	@echo Pre-Link Event:
+	
+	$(ECHO)
+postLink:
+	@echo Post-Link Event:
+	
+	$(ECHO)
+postBuild:
+	@echo Post-Build Event:
+	
+	$(ECHO)
+	

@@ -1,0 +1,218 @@
+        Generalplus 6502 Assembler - Version 1.7.1.0  
+              Listing File Has Been Relocated
+
+     1                              ;==================================================================================
+     2                              ; The information contained herein is the exclusive property of
+     3                              ; Generalplus Technology Co. And shall not be distributed, reproduced,
+     4                              ; or disclosed in whole in part without prior written permission.
+     5                              ;       (C) COPYRIGHT 2010   Generalplus TECHNOLOGY CO.                            
+     6                              ;                   ALL RIGHTS RESERVED
+     7                              ; The entire notice above must be reproduced on all authorized copies.
+     8                              ;==================================================================================
+     9                              ;==================================================================================
+    10                              ; Name                  : Startup.asm
+    11                              ; Applied Body          : GPL833F
+    12                              ; Programmer            : Neo
+    13                              ; Description           : RFC App Code For C or ASM Code
+    14                              ; History version       : V1.00 2016 01/18
+    15                              ;==================================================================================
+    16                              
+    17                              ;==========================================
+    18                              ; Compiler parameter define
+    19                              ;==========================================
+    20                              .SYNTAX 6502
+    21                              .LINKLIST
+    22                              .SYMBOLS
+    23                              ;==========================================
+    24                              ; Include file area
+    25                              ;==========================================
+    26                              .INCLUDE	".\RFC\RFCDriver.inc"
+    27                      <       ;.extern	F_TempRFC
+    28                      <       .extern	R_RFC_States
+    29                      <       .extern	R_CntRef
+    30                      <       .extern	R_CntSen2
+    31                      <       .extern	R_CntSen
+    32                      <       .extern	RFC_Initial
+    33                      <       
+    34                              .INCLUDE	".\RFC\rfcCalculate.inc"
+    35                      <       
+    36                      <       .extern		RW_RefValue
+    37                      <       .extern		RW_HumValue
+    38                      <       .extern		RW_TmpValue
+    39                      <       .extern		R2K_HB
+    40                      <       .extern		RW_LastTem
+    41                      <       .extern		RB_HumDataBCD
+    42                      <       .extern		RW_AvgRefValue
+    43                      <       .extern		R2K_LB
+    44                      <       .EXTERN		F_Calcultae_SensorData
+    45                              ;==========================================
+    46                              ; Constant define area
+    47                              ;==========================================
+    48                              ;==========================================
+    49                              ; External declare area
+    50                              ;==========================================
+    51                              
+    52                              
+    53                              ;==========================================
+    54                              ;Variable RAM declare area
+    55                              ;==========================================
+    56                              ;.PUBLIC	F_CopyTmpValueToLast
+    57                              ;.PUBLIC	F_CopyTmpValueToAux
+    58                              ;.PUBLIC	F_CopyHumValueToLast
+    59                              ;.PUBLIC	F_CopyHumValueToAux
+    60                              ;.PUBLIC	F_CopyRefValueToAux
+    61                              ;.PUBLIC	F_Copy_Answer_Aux
+    62                              ;.PUBLIC	F_Copy_Aux_Input
+    63                              ;.PUBLIC	F_IfRAnswerZero	
+    64 0000009A                     .PAGE0
+    65                              
+    66                              ;==========================================
+    67                              ; code starting 
+    68                              ;==========================================
+    69                              ;RFC .section
+    70                              ;;============================================================================
+    71                              ;;Function Name:	F_CopyTmpValueToLast
+    72                              ;;Description:	Copy RW_TemValue into RW_LastTem
+    73                              ;;Destroy:		A
+    74                              ;;Stack Depth:   2
+    75                              ;;============================================================================
+    76                              ;F_CopyTmpValueToLast:
+    77                              ;
+    78                              ;        LDA     RW_TmpValue
+    79                              ;        STA     RW_LastTem
+    80                              ;        LDA     RW_TmpValue+1
+    81                              ;        STA     RW_LastTem+1
+    82                              ;        
+    83                              ;        RTS
+    84                              ;
+    85                              ;;============================================================================
+    86                              ;;Function Name:	F_CopyTmpValueToAux
+    87                              ;;Description:	
+    88                              ;;Destroy:		A
+    89                              ;;Stack Depth:   2
+    90                              ;;============================================================================
+    91                              ;F_CopyTmpValueToAux:
+    92                              ;
+    93                              ;        LDA     RW_TmpValue
+    94                              ;        STA     R_Aux
+    95                              ;        LDA     RW_TmpValue+1
+    96                              ;        STA     R_Aux+1
+    97                              ;        LDA     #0
+    98                              ;        STA     R_Aux+2
+    99                              ;        RTS
+   100                              ;
+   101                              ;;============================================================================
+   102                              ;;Function Name:	F_CopyHumValueToLast
+   103                              ;;Description:	Copy RW_HumValue into RW_LastHum
+   104                              ;;Destroy:		A
+   105                              ;;Stack Depth:   2
+   106                              ;;============================================================================
+   107                              ;F_CopyHumValueToLast:
+   108                              ;
+   109                              ;        LDA     RW_HumValue
+   110                              ;        STA     RW_LastHum
+   111                              ;        ;LDA     RW_HumValue+1
+   112                              ;        ;STA     RW_LastHum+1
+   113                              ;
+   114                              ;        RTS
+   115                              ;
+   116                              ;;============================================================================
+   117                              ;;Function Name:	F_CopyHumValueToAux
+   118                              ;;Description:	
+   119                              ;;Destroy:		A
+   120                              ;;Stack Depth:   2
+   121                              ;;============================================================================
+   122                              ;F_CopyHumValueToAux:
+   123                              ;
+   124                              ;        LDA     RW_HumValue
+   125                              ;        STA     R_Aux
+   126                              ;        LDA     RW_HumValue+1
+   127                              ;        STA     R_Aux+1
+   128                              ;        LDA     #0
+   129                              ;        STA     R_Aux+2
+   130                              ;        RTS
+   131                              ;
+   132                              ;;============================================================================
+   133                              ;;Function Name:	F_CopyRefValueToAux
+   134                              ;;Description:	
+   135                              ;;Destroy:		A
+   136                              ;;Stack Depth:   2
+   137                              ;;============================================================================
+   138                              ;F_CopyRefValueToAux:
+   139                              ;        
+   140                              ;        LDA     RW_RefValue
+   141                              ;        STA     R_Aux
+   142                              ;        LDA     RW_RefValue+1
+   143                              ;        STA     R_Aux+1
+   144                              ;        LDA     #0
+   145                              ;        STA     R_Aux+2
+   146                              ;        RTS
+   147                              ;
+   148                              ;;======================================================================
+   149 0000009A                     F_Copy_Answer_Aux:
+   150                              ;        LDA     R_Answer+7
+   151                              ;        STA     R_Aux+7
+   152                              ;        LDA     R_Answer+6
+   153                              ;        STA     R_Aux+6
+   154                              ;        LDA     R_Answer+5
+   155                              ;        STA     R_Aux+5
+   156                              ;        LDA     R_Answer+4
+   157                              ;        STA     R_Aux+4
+   158                              ;        LDA     R_Answer+3
+   159                              ;        STA     R_Aux+3
+   160                              ;        LDA     R_Answer+2
+   161                              ;        STA     R_Aux+2
+   162                              ;        LDA     R_Answer+1
+   163                              ;        STA     R_Aux+1
+   164                              ;        LDA     R_Answer
+   165                              ;        STA     R_Aux
+   166 0000009A 60                          RTS
+   167                              ;;======================================================================
+   168 0000009B                     F_Copy_Aux_Input: 
+   169                              ;        LDA     R_Aux+7
+   170                              ;        STA     R_Input+7
+   171                              ;        LDA     R_Aux+6
+   172                              ;        STA     R_Input+6
+   173                              ;        LDA     R_Aux+5
+   174                              ;        STA     R_Input+5
+   175                              ;        LDA     R_Aux+4
+   176                              ;        STA     R_Input+4
+   177                              ;        LDA     R_Aux+3
+   178                              ;        STA     R_Input+3
+   179                              ;        LDA     R_Aux+2
+   180                              ;        STA     R_Input+2
+   181                              ;        LDA     R_Aux+1
+   182                              ;        STA     R_Input+1
+   183                              ;        LDA     R_Aux
+   184                              ;        STA     R_Input
+   185 0000009B 60                          RTS
+   186                              ;;;======================================================================
+   187                              ;;;Function name:        F_IfRAnswerZero
+   188                              ;;;Purpose:              check R_Answer if 0
+   189                              ;;;Input parameters:     R_Answer
+   190                              ;;;Output parameters:    a,bne:not zero;beq:is zero
+   191                              ;;;======================================================================
+   192                              ;F_IfRAnswerZero:
+   193                              ;		lda		R_Answer
+   194                              ;		ora		R_Answer+1
+   195                              ;		ora		R_Answer+2
+   196                              ;		ora		R_Answer+3
+   197                              ;		ora		R_Answer+4
+   198                              ;		ora		R_Answer+5
+   199                              ;		ora		R_Answer+6
+   200                              ;        RTS	
+   201                                      
+   202                              ;T_BCD2Hex_Ten:
+   203                              ;	DB	0,10,20,30,40,50,60,70,80,90
+   204                              ;	
+   205                              ;T_BCD2Hex_Hundred:
+   206                              ;	DW	0,100,200,300,400,500,600,700,800,900
+   207                              ;	
+   208                              ;T_BCD2Hex_Thousand:	
+   209                              ;	DW	0,1000,2000,3000,4000,5000,6000,7000,8000,9000
+   210                              ;	
+   211                              	
+   212                              
+   213                              .END
+0 Error(s), 0 Warning(s).
+

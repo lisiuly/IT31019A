@@ -1,0 +1,294 @@
+;============================================================================
+;File Name:	    temperature.tab
+;Applied body:	GPLxx
+;Purpose:		Define R-T data table of temperature sensor 
+;Programmer:	yangff
+;Date:			2010-01-28  for 10K RFC
+;============================================================================
+T_INDEX_RTMPEXP_BLOCK:  ;Mapping Rtmp into the specific block
+        ;     block index           Rtmp EXP (unit: kohm)
+        DB		3					;0
+        DB      2                   ;1
+        DB      1                   ;2
+        DB      0                   ;3
+        DB      INVALID_INDEX_BLOCK ;>2
+
+;============================================================================
+T_INDEX_BLOCK_T:    ;Data Block definition
+        DB      C_INDEX_NEG50,   C_INDEX_NEG33       ;-50'C   -33'C
+        DB			C_INDEX_NEG33,	 C_INDEX_10				;-34'C   10'C 
+        DB      C_INDEX_10,      C_INDEX_66       ;0x10       ;66'C
+        DB      C_INDEX_66,      C_R_T_DATA_NUM   ;0x66       ;70'C
+        
+;============================================================================
+T_R_T_HIGHBYTE:  ;R-T high byte data table
+
+
+    
+    C_INDEX_NEG50:  EQU     $ - T_R_T_HIGHBYTE
+ 				;1000Kohm		-50--- -34'		2858Kohm
+					DB      0x28				;-50		
+					DB      0x26				;-49
+					DB      0x25				;-48		
+					DB      0x23				;-47	
+					DB      0x21				;-46		
+					DB      0x20				;-45		
+					DB      0x19				;-44		
+					DB      0x18				;-43		
+					DB      0x16				;-42		
+					DB      0x15				;-41		
+					DB      0x14				;-40		
+					DB      0x14				;-39		
+					DB      0x13				;-38		
+					DB      0x12				;-37		
+					DB      0x11				;-36		
+					DB      0x10				;-35						
+					DB      0x10				;-34			
+			
+ 				
+    C_INDEX_NEG33:  EQU     $ - T_R_T_HIGHBYTE
+ 				;100Kohm		-33--- 9'		966Kohm
+ 				  DB      0x96        ;-33
+					DB      0x91        ;-32
+					DB      0x85        ;-31
+					DB      0x80        ;-30
+					DB      0x76				;-29
+					DB      0x71        ;-28
+					DB      0x67        ;-27
+					DB      0x63        ;-26
+					DB      0x60        ;-25
+					DB      0x56        ;-24
+					DB      0x53        ;-23
+					DB      0x50        ;-22
+					DB      0x47        ;-21
+					DB      0x45        ;-20
+					DB      0x42				;-19
+					DB      0x40        ;-18
+					DB      0x38        ;-17
+					DB      0x36        ;-16
+					DB      0x34        ;-15
+					DB      0x32        ;-14
+					DB      0x30        ;-13
+					DB      0x29        ;-12
+					DB      0x27        ;-11
+					DB      0x26        ;-10
+					DB      0x24				;-9
+					DB      0x23        ;-8
+					DB      0x22        ;-7
+					DB      0x21        ;-6
+					DB      0x20        ;-5
+					DB      0x19        ;-4
+					DB      0x18        ;-3
+					DB      0x17        ;-2
+					DB      0x16        ;-1
+					DB      0x15        ;0
+					DB      0x14				;1
+          DB      0x14        ;2
+ 				  DB      0x13        ;3
+          DB      0x12        ;4
+          DB      0x12        ;5
+          DB      0x11        ;6
+          DB      0x11        ;7
+          DB      0x10        ;8
+          DB      0x10        ;9
+                              
+ 				            
+    C_INDEX_10:     EQU     $ - T_R_T_HIGHBYTE
+    ;       10Kohm   -20 'C	    96.88 kohm       	
+        DB      0x96 	;10	
+        DB      0x92 	;11	
+        DB      0x88 	;12	
+        DB      0x84 	;13	 
+        DB      0x80 	;14	 
+        DB      0x76 	;15	 
+        DB      0x73 	;16	 
+        DB      0x70 	;17	 
+        DB      0x66 	;18	
+        DB      0x64 	;19	
+        DB      0x61  ;20	
+        DB      0x58 	;21	    
+        DB      0x56 	;22	    
+        DB      0x53 	;23	    
+        DB      0x51 	;24	    
+        DB      0x49 	;25	    
+        DB      0x47 	;26	    
+        DB      0x45 	;27	    
+        DB      0x43 	;28	    
+        DB      0x41 	;29
+        DB      0x39 	;30
+        DB      0x38 	;31	    
+        DB      0x36 	;32	    
+        DB      0x34 	;33	    
+        DB      0x33 	;34	    
+        DB      0x32	;35	    
+        DB      0x30 	;36	    
+        DB      0x29 	;37	    
+        DB      0x28 	;38	    
+        DB      0x27 	;39	    
+        DB      0x26 	;40	    
+        DB      0x25 	;41	    
+        DB      0x24 	;42	    
+        DB      0x23	;43	    
+        DB      0x22 	;44	    
+        DB      0x21 	;45'C 10.00L
+        DB      0x20 	;46	    
+        DB      0x19 	;47    
+        DB      0x19 	;48    
+        DB      0x18 	;49    
+        DB      0x17 	;50
+        DB      0x17 	;51
+        DB      0x16 	;52	    
+        DB      0x15 	;53	    
+        DB      0x15 	;54	    
+        DB      0x14 	;55	    
+        DB      0x14	;56	    
+        DB      0x13 	;57	    
+        DB      0x13 	;58	    
+        DB      0x12 	;59	    
+        DB      0x12 	;60	    
+        DB      0x11 	;61	    
+        DB      0x11 	;62	    
+        DB      0x10 	;63	    
+        DB      0x10	;64	    
+        DB      0x10 	;65	    
+        
+
+    C_INDEX_66:     EQU     $ - T_R_T_HIGHBYTE
+        ;       ohm     'C
+        DB      0x98	;66	    9.8015 kohm  
+        DB      0x94 	;67    
+        DB      0x91 	;68	    
+        DB      0x88 	;69	    
+        DB      0x85 	;70	    
+
+ 
+        
+    C_R_T_DATA_NUM:     EQU     $ - T_R_T_HIGHBYTE
+ 
+;============================================================================
+T_R_T_LOWBYTE:  ;R-T low byte data table
+
+
+;       10Kohm   -20 'C	    96.88 kohm        
+	
+        DB      0x58 	;-50	
+        DB      0x73 	;-49	
+        DB      0x02 	;-48	
+        DB      0x42 	;-47	 
+        DB      0x98	;-46	 
+        DB      0x55 	;-45	 
+        DB      0x28 	;-44	 
+        DB      0x06 	;-43	 
+        DB      0x94 	;-42	
+        DB      0x89 	;-41	
+        DB      0x92  ;-40	
+        DB      0x00 	;-39  
+        DB      0x15 	;-38  
+        DB      0x36 	;-37  
+        DB      0x68	;-36  
+        DB      0x92 	;-35  
+        DB      0x28 	;-34  
+        DB      0x69 	;-33  
+        DB      0x02 	;-32  
+        DB      0x71 	;-31  
+        DB      0x74  ;-30 
+        DB      0x08 	;-29
+        DB      0x72 	;-28
+        DB      0x63 	;-27
+        DB      0x80	;-26
+        DB      0x21 	;-25
+        DB      0x83 	;-24
+        DB      0x67 	;-23
+        DB      0x70 	;-22
+        DB      0x91 	;-21
+        DB      0x29  ;-20 
+        DB      0x82 	;-19
+        DB      0x51 	;-18
+        DB      0x33 	;-17
+        DB      0x28	;-16
+        DB      0x35 	;-15
+        DB      0x54 	;-14
+        DB      0x83 	;-13
+        DB      0x22 	;-12
+        DB      0x70 	;-11
+        DB      0x27  ;-10
+        DB      0x92 	;-9  
+        DB      0x85 	;-8  
+        DB      0x45 	;-7  
+        DB      0x32	;-6  
+        DB      0x25 	;-5  
+        DB      0x24 	;-4  
+        DB      0x28 	;-3  
+        DB      0x38 	;-2  
+        DB      0x53 	;-1  
+        DB      0x72  ;0  
+        DB      0x96 	;1	    
+        DB      0x24 	;2	    
+        DB      0x56 	;3	    
+        DB      0x91 	;4	    
+        DB      0x30 	;5	    
+        DB      0x72 	;6	    
+        DB      0x17 	;7	    
+        DB      0x85 	;8	    
+        DB      0x15 	;9
+        DB      0x83	;10	    19.83K
+        DB      0x38 	;11	    
+        DB      0x18 	;12	    
+        DB      0x16 	;13	    
+        DB      0x36 	;14	    
+        DB      0x75 	;15	    
+        DB      0x32 	;16	    
+        DB      0x06 	;17	    
+        DB      0x96 	;18	    
+        DB      0x02 	;19	    
+        DB      0x22 	;20	    
+        DB      0x55 	;21	    ;;1193
+        DB      0x02 	;22	    ;;1141
+        DB      0x60 	;23	    ;;1092
+        DB      0x31 	;24	    ;;1045
+        DB      0x12 	;25	    ; 10.00K    
+        DB      0x04 	;26	 9.675 kohm   
+        DB      0x05 	;27	    
+        DB      0x16 	;28	    
+        DB      0x36 	;29	    
+        DB      0x64 	;30	    
+        DB      0x00 	;31	    
+        DB      0x44 	;32	    
+        DB      0x95 	;33	    
+        DB      0x52 	;34	    
+        DB      0x16 	;35	    
+        DB      0x87 	;36	    
+        DB      0x63 	;37	    
+        DB      0x44 	;38	    
+        DB      0x31 	;39	    
+        DB      0x23 	;40	    
+        DB      0x20 	;41	    
+        DB      0x21 	;42	    
+        DB      0x27 	;43	    
+        DB      0x27 	;44	    
+        DB      0x50 	;45	    
+        DB      0x68 	;46	    
+        DB      0x89 	;47	    
+        DB      0x13 	;48	    
+        DB      0x40 	;49	    
+        DB      0x71 	;50	    
+        DB      0x04  ;51	    
+        DB      0x41 	;52	     	
+        DB      0x80 	;53	    
+        DB      0x21 	;54	    
+        DB      0x65 	;55	    
+        DB      0x11 	;56	    
+        DB      0x60 	;57	    
+        DB      0x10 	;58	    
+        DB      0x63 	;59	    
+        DB      0x17 	;60	    
+	      DB      0x74  ;61
+        DB      0x32 	;62
+	      DB      0x92 	;63
+	      DB      0x53 	;64
+	      DB      0x16 	;65
+	      DB      0x02 	;66
+        DB      0x59 	;67
+        DB      0x30 	;68
+        DB      0x14 	;69
+        DB      0x10 	;70

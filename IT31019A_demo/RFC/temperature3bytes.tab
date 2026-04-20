@@ -1,0 +1,482 @@
+;==================================================================================
+; The information contained herein is the exclusive property of
+; Generalplus Technology Co. And shall not be distributed, reproduced,
+; or disclosed in whole in part without prior written permission.
+;       (C) COPYRIGHT 2009   Generalplus TECHNOLOGY CO.                            
+;                   ALL RIGHTS RESERVED
+; The entire notice above must be reproduced on all authorized copies.
+;==================================================================================
+;==================================================================================
+; Name                  : Startup.asm
+; Applied Body          : GPL08Ax/GPL081Ax/GPL082Ax/GPL083Ax/GPL083Bx/GPL084Ax/GPL085Ax/GPL086Ax/GPL086Bx/GPL08003Ax
+; Programmer            : 
+; Description           : 
+; History version       : 
+;==================================================================================
+
+;==========================================
+; Compiler parameter define
+;==========================================
+.SYNTAX 6502
+.LINKLIST
+	.SYMBOLS
+
+;==========================================
+; Constant define area
+;==========================================
+
+
+;==========================================
+; External declare area
+;==========================================
+
+
+
+
+;==========================================
+; Public declare area
+;==========================================
+.PUBLIC		TableH0
+;.PUBLIC		TableH256
+.PUBLIC		TableHN50
+.PUBLIC		TableM0
+;.PUBLIC		TableM256
+.PUBLIC		TableMN50
+.PUBLIC		TableL0
+;.PUBLIC		TableL256
+.PUBLIC		TableLN50
+
+;==========================================
+;Variable RAM declare area
+;==========================================
+; code starting 
+;==========================================
+;============================
+; High Byte
+;============================
+
+TableH0:
+	DB	0x00       ;0
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;5
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;10
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;15
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;20
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;25
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;30
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;35
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;40
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;45
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;50
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;55
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;60
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;65
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;70
+
+;============================
+; Mid Byte
+;============================
+TableM0:
+	DB	0x6D       ;0 (006DEA)
+	DB	0x69       ;1 (006988)
+	DB	0x65       ;2 (006561)
+	DB	0x61       ;3 (006169)
+	DB	0x5D       ;4 (005D9F)
+	DB	0x59       ;5 (005999)
+	DB	0x56       ;6 (005626)
+	DB	0x52       ;7 (0052DD)
+	DB	0x4F       ;8 (004FB9)
+	DB	0x4C       ;9 (004CBA)
+	DB	0x49       ;10 (004989)
+	DB	0x46       ;11 (0046CE)
+	DB	0x44       ;12 (004432)
+	DB	0x41       ;13 (0041B3)
+	DB	0x3F       ;14 (003F51)
+	DB	0x3C       ;15 (003CD1)
+	DB	0x3A       ;16 (003AA3)
+	DB	0x38       ;17 (00388F)
+	DB	0x36       ;18 (003690)
+	DB	0x34       ;19 (0034A8)
+	DB	0x32       ;20 (0032AE)
+	DB	0x30       ;21 (0030F0)
+	DB	0x2F       ;22 (002F44)
+	DB	0x2D       ;23 (002DAA)
+	DB	0x2C       ;24 (002C21)
+	DB	0x2A       ;25 (002AA5)
+	DB	0x29       ;26 (002957)
+	DB	0x27       ;27 (0027FD)
+	DB	0x26       ;28 (0026B0)
+	DB	0x25       ;29 (002571)
+	DB	0x24       ;30 (002401)
+	DB	0x22       ;31 (0022DE)
+	DB	0x21       ;32 (0021C6)
+	DB	0x20       ;33 (0020B9)
+	DB	0x1F       ;34 (001FF8)ฒน	
+	DB	0x1F       ;34 (001FB8)35
+	DB	0x1E       ;35 (001F48)	ฒน	
+	DB	0x1E       ;35 (001EB2)
+	DB	0x1D       ;36 (001DC4)
+	DB	0x1C       ;37 (001CE0)
+	DB	0x1C       ;38 (001C05)40
+	DB	0x1B       ;39 (001B33)
+	DB	0x1A       ;40 (001A61)
+	DB	0x19       ;41 (00199E)
+	DB	0x18       ;42 (0018E3)
+	DB	0x18       ;43 (001830)45
+	DB	0x17       ;44 (001783)
+	DB	0x16       ;45 (0016D8)
+	DB	0x16       ;46 (001638)
+	DB	0x15       ;47 (00159F)
+	DB	0x15       ;48 (00150B)50
+	DB	0x14       ;49 (00147D)
+	DB	0x13       ;50 (0013F3)
+	DB	0x13       ;51 (00136F)
+	DB	0x12       ;52 (0012F0)
+	DB	0x12       ;53 (001275)55
+	DB	0x12       ;54 (001235)	ฒน
+	DB	0x12       ;54 (001200)
+	DB	0x11       ;55 (00118E)
+	DB	0x11       ;56 (001120)
+	DB	0x10       ;57 (0010B7)60
+	DB	0x10       ;58 (001052)
+	DB	0x0F       ;59 (000FEF)
+	DB	0x0F       ;60 (000F91)
+	DB	0x0F       ;61 (000F36)
+	DB	0x0E       ;62 (000EDE)65
+	DB	0x0E       ;63 (000E88)
+	DB	0x0E       ;64 (000E36)
+	DB	0x0D       ;65 (000DE8)
+	DB	0x0D       ;66 (000D9C)
+	DB	0x0D       ;67 (000D52)70
+;	DB	0x0D       ;68 (000D0A)
+;	DB	0x0C       ;69 (000CC5)
+;	DB	0x0C       ;70 (000C84)
+
+;============================
+; Low Byte
+;============================
+TableL0:
+	DB	0xEA       ;0 (006DEA -> EA)
+	DB	0x88       ;1 (006988 -> 88)
+	DB	0x61       ;2 (006561 -> 61)
+	DB	0x69       ;3 (006169 -> 69)
+	DB	0x9F       ;4 (005D9F -> 9F)
+	DB	0x99       ;5 (005999 -> 99)
+	DB	0x26       ;6 (005626 -> 26)
+	DB	0xDD       ;7 (0052DD -> DD)
+	DB	0xB9       ;8 (004FB9 -> B9)
+	DB	0xBA       ;9 (004CBA -> BA)
+	DB	0x89       ;10 (004989 -> 89)
+	DB	0xCE       ;11 (0046CE -> CE)
+	DB	0x32       ;12 (004432 -> 32)
+	DB	0xB3       ;13 (0041B3 -> B3)
+	DB	0x51       ;14 (003F51 -> 51)
+	DB	0xD1       ;15 (003CD1 -> D1)
+	DB	0xA3       ;16 (003AA3 -> A3)
+	DB	0x8F       ;17 (00388F -> 8F)
+	DB	0x90       ;18 (003690 -> 90)
+	DB	0xA8       ;19 (0034A8 -> A8)
+	DB	0xAE       ;20 (0032AE -> AE)
+	DB	0xF0       ;21 (0030F0 -> F0)
+	DB	0x44       ;22 (002F44 -> 44)
+	DB	0xAA       ;23 (002DAA -> AA)
+	DB	0x21       ;24 (002C21 -> 21)
+	DB	0xA5       ;25 (002AA5 -> A5)
+	DB	0x57       ;26 (002957 -> 57)
+	DB	0xFD       ;27 (0027FD -> FD)
+	DB	0xB0       ;28 (0026B0 -> B0)
+	DB	0x71       ;29 (002571 -> 71)
+	DB	0x01       ;30 (002401 -> 01)
+	DB	0xDE       ;31 (0022DE -> DE)
+	DB	0xC6       ;32 (0021C6 -> C6)
+	DB	0xB9       ;33 (0020B9 -> B9)
+	DB	0xF8       ;34 (001FF8 -> B9)ฒน	
+	DB	0xB8       ;34 (001FB8 -> B8)35
+	DB	0x48       ;35 (001EB2 -> B2)ฒน	
+	DB	0xB2       ;35 (001EB2 -> B2)
+	DB	0xC4       ;36 (001DC4 -> C4)
+	DB	0xE0       ;37 (001CE0 -> E0)
+	DB	0x05       ;38 (001C05 -> 05)40
+	DB	0x33       ;39 (001B33 -> 33)
+	DB	0x61       ;40 (001A61 -> 61)
+	DB	0x9E       ;41 (00199E -> 9E)
+	DB	0xE3       ;42 (0018E3 -> E3)
+	DB	0x30       ;43 (001830 -> 30)45
+	DB	0x83       ;44 (001783 -> 83)
+	DB	0xD8       ;45 (0016D8 -> D8)
+	DB	0x38       ;46 (001638 -> 38)
+	DB	0x9F       ;47 (00159F -> 9F)
+	DB	0x0B       ;48 (00150B -> 0B)50
+	DB	0x7D       ;49 (00147D -> 7D)
+	DB	0xF3       ;50 (0013F3 -> F3)
+	DB	0x70       ;51 (00136F -> 70)
+	DB	0xF0       ;52 (0012F0 -> F0)
+	DB	0x75       ;53 (001275 -> 75)55
+	DB	0x35       ;54 (001235 -> 00)ฒน	
+	DB	0x00       ;54 (001200 -> 00)
+	DB	0x8E       ;55 (00118E -> 8E)
+	DB	0x20       ;56 (001120 -> 20)
+	DB	0xB7       ;57 (0010B7 -> B7)60
+	DB	0x52       ;58 (001052 -> 52)
+	DB	0xF3       ;59 (000FEF -> F3)
+	DB	0x91       ;60 (000F91 -> 91)
+	DB	0x36       ;61 (000F36 -> 36)
+	DB	0xDE       ;62 (000EDE -> DE)65
+	DB	0x88       ;63 (000E88 -> 88)
+	DB	0x36       ;64 (000E36 -> 36)
+	DB	0xE8       ;65 (000DE8 -> E8)
+	DB	0x9C       ;66 (000D9C -> 9C)
+	DB	0x52       ;67 (000D52 -> 52)70
+;	DB	0x0A       ;68 (000D0A -> 0A)
+;	DB	0xC5       ;69 (000CC5 -> C5)
+;	DB	0x84       ;70 (000C84 -> 84)
+
+;		
+;TableDataL256_300:	.section
+;;============================
+;; Low Byte
+;;============================
+;TableL256:
+;	DB	0x9F       ;256
+;	DB	0x9C
+;	DB	0x98
+;	DB	0x95
+;	DB	0x91       ;260
+;	DB	0x8E
+;	DB	0x8B
+;	DB	0x88
+;	DB	0x85
+;	DB	0x82       ;265
+;	DB	0x7F
+;	DB	0x7C
+;	DB	0x79
+;	DB	0x76
+;	DB	0x73       ;270
+;	DB	0x71
+;	DB	0x6E
+;	DB	0x6B
+;	DB	0x69
+;	DB	0x66       ;275
+;	DB	0x64
+;	DB	0x62
+;	DB	0x5F
+;	DB	0x5D
+;	DB	0x5B       ;280
+;	DB	0x59
+;	DB	0x56
+;	DB	0x54
+;	DB	0x52
+;	DB	0x50       ;285
+;	DB	0x4E
+;	DB	0x4C
+;	DB	0x4A
+;	DB	0x48
+;	DB	0x47       ;290
+;	DB	0x45
+;	DB	0x43
+;	DB	0x41
+;	DB	0x3F
+;	DB	0x3E       ;295
+;	DB	0x3C
+;	DB	0x3B
+;	DB	0x39
+;	DB	0x37
+;	DB	0x36       ;300
+;		
+;TableDataHN50_N1:	.section
+;============================
+; High Byte
+;============================
+
+TableHN50:
+	DB	0x02       ;-40
+	DB	0x02
+	DB	0x02
+	DB	0x02
+	DB	0x02
+	DB	0x02       ;-35
+	DB	0x01
+	DB	0x01
+	DB	0x01
+	DB	0x01
+	DB	0x01       ;-30
+	DB	0x01
+	DB	0x01
+	DB	0x01
+	DB	0x01
+	DB	0x01       ;-25
+	DB	0x01
+	DB	0x01
+	DB	0x01
+	DB	0x01				
+;	DB	0x01       ;-20
+;	DB	0x01
+	DB	0x00		;-18==>-20  00ED45
+	DB	0x00		;ฒน			00E845	
+	DB	0x00		;ฒน			00E545
+	DB	0x00		;			00E2F5
+	DB	0x00
+	DB	0x00       ;-15
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;-10
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;-5
+	DB	0x00
+	DB	0x00
+	DB	0x00
+	DB	0x00       ;-1
+
+;============================
+; Mid Byte
+;============================
+TableMN50:
+	DB	0x8B       ;-40
+	DB	0x6D
+	DB	0x51
+	DB	0x36
+	DB	0x1C
+	DB	0x04       ;-35
+	DB	0xEC
+	DB	0xD6
+	DB	0xC1
+	DB	0xAC
+	DB	0x99       ;-30
+	DB	0x86
+	DB	0x75
+	DB	0x64
+	DB	0x54
+	DB	0x45       ;-25
+	DB	0x36
+	DB	0x29
+	DB	0x1B
+	DB	0x0F
+;	DB	0x03       ;-20
+;	DB	0xF8
+	DB	0xED	;-18==>-20
+	DB	0xE8	;ฒน
+	DB	0xE5	;ฒน		
+	DB	0xE2
+	DB	0xD9
+	DB	0xCF       ;-15
+	DB	0xC6
+	DB	0xBE
+	DB	0xB6
+	DB	0xAE
+	DB	0xA7       ;-10
+	DB	0xA0
+	DB	0x99
+	DB	0x93
+	DB	0x8D
+	DB	0x87       ;-5
+	DB	0x81
+	DB	0x7C
+	DB	0x77
+	DB	0x72       ;-1
+
+;============================
+; Low Byte
+;============================
+TableLN50:
+	DB	0x02       ;-40
+	DB	0x90
+	DB	0x5E
+	DB	0x70
+	DB	0xB7
+	DB	0x2C       ;-35
+	DB	0xBF
+	DB	0x67
+	DB	0x16
+	DB	0xC4
+	DB	0x65       ;-30
+	DB	0xEE
+	DB	0x56
+	DB	0x92
+	DB	0x98
+	DB	0x60       ;-25
+	DB	0xE1
+	DB	0x12
+	DB	0xEB
+	DB	0x64
+;	DB	0x76       ;-20
+;	DB	0x18
+	DB	0x45		;-18==>-20
+	DB	0x45		;ฒน
+	DB	0x45		;ฒน
+	DB	0xF5
+	DB	0x22
+	DB	0xC7       ;-15
+	DB	0xDE
+	DB	0x5F
+	DB	0x48
+	DB	0x92
+	DB	0x39       ;-10
+	DB	0x37
+	DB	0x8A
+	DB	0x2D
+	DB	0x1B
+	DB	0xC3       ;-5
+	DB	0xCD
+	DB	0x89
+	DB	0x84
+	DB	0xBA       ;-1

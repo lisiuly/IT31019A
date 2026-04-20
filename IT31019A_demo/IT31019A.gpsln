@@ -1,0 +1,36 @@
+# Generalplus IDE Solution File, Format Version 1.0.0
+# Warning: do not edit or delete this solution file!
+
+# ////////////////////////////////////////////////////
+# Begin Solution
+<Solution>
+	NAME : IT31019A
+	GUID : {2A156117-1517-4531-AB4F-1D1803665E9C}
+	STARTUP : {5EA23FB5-0B96-4296-99E4-F9165A376FF3}
+	ACTIVECONFIGURATION : Release
+	AUTOOPENPROJECTSETTING : TRUE
+</Solution>
+# End Solution
+
+# ////////////////////////////////////////////////////
+# Begin Project
+<Projects>
+	COUNT : 1
+	<Project1>
+		NAME : IT31019A
+		GUID : {5EA23FB5-0B96-4296-99E4-F9165A376FF3}
+		PATH : .\IT31019A.gpproj
+		Dependencies : 
+	</Project1>
+</Projects>
+
+# End Project
+# ////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////
+# Begin BookMark
+<BookMarks>
+	COUNT : 0
+</BookMarks>
+
+# End BookMark
+# ////////////////////////////////////////////////////

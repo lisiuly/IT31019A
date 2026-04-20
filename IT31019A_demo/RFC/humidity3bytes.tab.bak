@@ -1,0 +1,270 @@
+;============================================================================
+;File Name:	    humidity.tab
+;Applied body:	GPLxx
+;Purpose:		Provide R-H data table of humidity sensor (GHR01-2530)
+;Programmer:	yangff
+;Date:			2010-01-28
+;Note:          The sensor circuit should be modified as following connection
+;               IO pin ------- Humidity Sensor  ----- 510 ohm Resistor ---
+;                         |                       |                      |
+;                         |--- 1 Mohm Resistor  --|                 Capacitor
+;                                                                        |
+;                                                                        |
+;                                                                     Ground
+;============================================================================
+T_R_H_BLOCK:    ;Define different R_H table index for different temperature
+        %HumDataRecordDef   0x00, T_R_H_TEM00, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x05, T_R_H_TEM05, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x10, T_R_H_TEM10, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x15, T_R_H_TEM15, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x20, T_R_H_TEM20, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x25, T_R_H_TEM25, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x30, T_R_H_TEM30, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x35, T_R_H_TEM35, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x40, T_R_H_TEM40, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x45, T_R_H_TEM45, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x50, T_R_H_TEM50, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x55, T_R_H_TEM55, C_R_H_BLOCK_LEN
+        %HumDataRecordDef   0x60, T_R_H_TEM60, C_R_H_BLOCK_LEN
+    
+    C_R_H_BLOCK_SIZE:       EQU     $ - T_R_H_BLOCK ;Block space size
+;============================================================================
+C_RHUM_MAX      EQU         0x11ED13      ;Maximum resistance is 862.4kohm
+
+T_R_H_TEM00:
+.DB	11H,EDH,13H		;25
+.DB	A8H,DAH,BFH		;30
+.DB	73H,DCH,30H		;35
+.DB	5DH,0DH,C0H		;40
+.DB	52H,64H,27H		;45
+.DB	4DH,5CH,3DH		;50
+.DB	4AH,9DH,71H		;55
+.DB	49H,51H,7EH		;60
+.DB	48H,A9H,8CH		;65
+.DB	48H,4BH,CEH		;70
+.DB	48H,11H,37H		;75
+.DB	47H,F3H,EBH		;80
+.DB	47H,E0H,63H		;85
+.DB	47H,D3H,1BH		;90
+
+
+
+
+T_R_H_TEM05:    ;0'C
+.DB	DFH,0BH,0BH		;25
+.DB	45H,ECH,22H		;30
+.DB	1FH,FCH,CBH		;35
+.DB	56H,F6H,5FH		;40
+.DB	07H,A0H,4FH		;45
+.DB	04H,0AH,EFH		;50
+.DB	02H,49H,DFH		;55
+.DB	01H,73H,12H		;60
+.DB	01H,09H,9EH		;65
+.DB	00H,D6H,D7H		;70
+.DB	00H,BBH,7FH		;75
+.DB	00H,B7H,97H		;80
+.DB	00H,BCH,47H		;85
+.DB	00H,C4H,7BH		;90
+
+T_R_H_TEM10:    ;5'C
+.DB	B1H,E8H,8BH		;25
+.DB	78H,6AH,21H		;30
+.DB	5EH,93H,6FH		;35
+.DB	53H,27H,3BH		;40
+.DB	4DH,83H,47H		;45
+.DB	4AH,C4H,7EH		;50
+.DB	49H,65H,05H		;55
+.DB	48H,A9H,8CH		;60
+.DB	48H,47H,E6H		;65
+.DB	48H,15H,1FH		;70
+.DB	47H,F1H,F7H		;75
+.DB	47H,DEH,6FH		;80
+.DB	47H,D1H,EFH		;85
+.DB	47H,C9H,BBH		;90
+
+
+
+T_R_H_TEM15:     ;10'C
+.DB	DFH,0BH,0BH		;20
+.DB	93H,B1H,95H		;25
+.DB	6AH,BEH,90H		;30
+.DB	58H,7CH,50H		;35
+.DB	4FH,F3H,CDH		;40
+.DB	4BH,FCH,DEH		;45
+.DB	4AH,01H,3DH		;50
+.DB	48H,FFH,7AH		;55
+.DB	48H,7AH,ADH		;60
+.DB	48H,2CH,8FH		;65
+.DB	48H,01H,97H		;70
+.DB	47H,E6H,3FH		;75
+.DB	47H,D6H,9FH		;80
+.DB	47H,CCH,DBH		;85
+.DB	47H,C6H,FFH		;90
+
+T_R_H_TEM20:     ;15'C
+.DB	ADH,61H,EFH		;20
+.DB	7BH,73H,19H		;25
+.DB	62H,61H,5BH		;30
+.DB	54H,ADH,56H		;35
+.DB	4EH,1FH,6DH		;40
+.DB	4AH,EBH,8BH		;45
+.DB	49H,78H,8CH		;50
+.DB	48H,B1H,5CH		;55
+.DB	48H,4FH,B6H		;60
+.DB	48H,15H,1FH		;65
+.DB	47H,F3H,EBH		;70
+.DB	47H,DEH,6FH		;75
+.DB	47H,D2H,B7H		;80
+.DB	47H,CAH,1FH		;85
+.DB	47H,C4H,43H		;90
+
+
+T_R_H_TEM25:     ;20'C
+.DB	93H,B1H,95H		;20
+.DB	6FH,4DH,AAH		;25
+.DB	5BH,88H,01H		;30
+.DB	51H,53H,05H		;35
+.DB	4CH,71H,FFH		;40
+.DB	4AH,28H,4AH		;45
+.DB	49H,0BH,31H		;50
+.DB	48H,76H,C5H		;55
+.DB	48H,30H,77H		;60
+.DB	48H,03H,8BH		;65
+.DB	47H,EAH,27H		;70
+.DB	47H,D8H,2FH		;75
+.DB	47H,CDH,A3H		;80
+.DB	47H,C6H,FFH		;85
+.DB	47H,C2H,4FH		;90
+
+
+T_R_H_TEM30:     ;25'C
+.DB	83H,08H,66H		;20
+.DB	64H,A9H,84H		;25
+.DB	56H,81H,60H		;30
+.DB	4EH,BBH,8FH		;35
+.DB	4BH,4DH,29H		;40
+.DB	49H,9FH,9AH		;45
+.DB	48H,C4H,E4H		;50
+.DB	48H,4FH,B6H		;55
+.DB	48H,19H,07H		;60
+.DB	47H,F5H,DFH		;65
+.DB	47H,E0H,63H		;70
+.DB	47H,D3H,7FH		;75
+.DB	47H,CAH,E7H		;80
+.DB	47H,C5H,0BH		;85
+.DB	47H,C1H,23H		;90
+
+
+T_R_H_TEM35:     ;30'C
+.DB	75H,60H,E6H		;20
+.DB	5EH,93H,6FH		;25
+.DB	53H,00H,37H		;30
+.DB	4DH,83H,47H		;35
+.DB	4AH,9DH,71H		;40
+.DB	49H,3DH,F7H		;45
+.DB	48H,92H,1DH		;50
+.DB	48H,38H,47H		;55
+.DB	48H,05H,7FH		;60
+.DB	47H,EAH,27H		;65
+.DB	47H,DAH,87H		;70
+.DB	47H,CFH,97H		;75
+.DB	47H,C8H,2BH		;80
+.DB	47H,C3H,7BH		;85
+.DB	47H,BFH,F7H		;90
+
+
+T_R_H_TEM40:     ;35'C
+.DB	6CH,43H,A9H		;20
+.DB	58H,7CH,50H		;25
+.DB	50H,68H,E1H		;30
+.DB	4BH,FCH,DEH		;35
+.DB	49H,DAH,2FH		;40
+.DB	48H,E8H,0AH		;45
+.DB	48H,67H,26H		;50
+.DB	48H,20H,D7H		;55
+.DB	47H,FBH,BBH		;60
+.DB	47H,E4H,4BH		;65
+.DB	47H,D6H,9FH		;70
+.DB	47H,CDH,3FH		;75
+.DB	47H,C6H,9BH		;80
+.DB	47H,C2H,4FH		;85
+.DB	47H,BFH,2FH		;90
+
+
+T_R_H_TEM45:     ;40'C
+.DB	62H,61H,5BH		;20
+.DB	55H,22H,5BH		;25
+.DB	4EH,1FH,6DH		;30
+.DB	4AH,EBH,8BH		;35
+.DB	49H,65H,05H		;40
+.DB	48H,B1H,5CH		;45
+.DB	48H,4BH,CEH		;50
+.DB	48H,15H,1FH		;55
+.DB	47H,F1H,F7H		;60
+.DB	47H,DEH,6FH		;65
+.DB	47H,D2H,B7H		;70
+.DB	47H,CAH,83H		;75
+.DB	47H,C4H,A7H		;80
+.DB	47H,C0H,BFH		;85
+.DB	47H,BEH,67H		;90
+
+T_R_H_TEM50:     ;45'C
+.DB	5DH,D0H,9AH		;20
+.DB	52H,64H,27H		;25
+.DB	4CH,E7H,1FH		;30
+.DB	4AH,4FH,57H		;35
+.DB	49H,0FH,19H		;40
+.DB	48H,7AH,ADH		;45
+.DB	48H,30H,77H		;50
+.DB	48H,03H,8BH		;55
+.DB	47H,EAH,27H		;60
+.DB	47H,D8H,F7H		;65
+.DB	47H,CEH,CFH		;70
+.DB	47H,C7H,C7H		;75
+.DB	47H,C3H,17H		;80
+.DB	47H,BFH,93H		;85
+.DB	47H,BDH,6DH		;90
+
+
+
+T_R_H_TEM55:     ;50'C
+.DB	59H,3FH,42H		;20
+.DB	50H,41H,DAH		;25
+.DB	4BH,D5H,D3H		;30
+.DB	4AH,01H,3DH		;35
+.DB	48H,C8H,CBH		;40
+.DB	48H,57H,86H		;45
+.DB	48H,19H,07H		;50
+.DB	47H,F9H,C7H		;55
+.DB	47H,E2H,57H		;60
+.DB	47H,D5H,0FH		;65
+.DB	47H,CCH,77H		;70
+.DB	47H,C6H,37H		;75
+.DB	47H,C1H,EBH		;80
+.DB	47H,BEH,CBH		;85
+.DB	47H,BCH,D7H		;90
+
+T_R_H_TEM60:
+.DB	56H,81H,60H		;20
+.DB	4EH,94H,87H		;25
+.DB	4AH,FFH,11H		;30
+.DB	49H,B3H,21H		;35
+.DB	48H,96H,05H		;40
+.DB	48H,3CH,2FH		;45
+.DB	48H,09H,67H		;50
+.DB	47H,EEH,0FH		;55
+.DB	47H,DCH,17H		;60
+.DB	47H,D1H,EFH		;65
+.DB	47H,CAH,1FH		;70
+.DB	47H,C4H,A7H		;75
+.DB	47H,C1H,23H		;80
+.DB	47H,BEH,67H		;85
+.DB	47H,BCH,73H		;90
+
+
+
+
+
+
+C_R_H_BLOCK_LEN:        EQU     $ - T_R_H_TEM55
+C_RHUM_MIN      EQU     0x000694          ;Minimum resistance is 1.2kohm

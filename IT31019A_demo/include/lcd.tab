@@ -1,0 +1,298 @@
+;==========================================
+; Constant define area
+;==========================================
+C_Com0MinByteNum	EQU	00H
+C_Com1MinByteNum	EQU	02H
+C_Com2MinByteNum	EQU	04H
+C_Com3MinByteNum	EQU	06H
+; -----------------------------
+;Seg00	EQU	15
+;Seg01	EQU	14
+;Seg02	EQU	13
+;Seg03	EQU	12
+;Seg04	EQU	11
+;Seg05	EQU	10
+;Seg06	EQU	9
+;Seg07	EQU	8
+;Seg08	EQU	7
+;Seg09	EQU	6
+;Seg10	EQU	5
+;Seg11	EQU	4
+;Seg12	EQU	3
+;Seg13	EQU	2
+;Seg14	EQU	1
+;Seg15	EQU	0
+;
+;C_Seg15	EQU	00000001B
+;C_Seg14	EQU	00000010B
+;C_Seg13	EQU	00000100B
+;C_Seg12	EQU	00001000B
+;C_Seg11	EQU	00010000B
+;C_Seg10	EQU	00100000B
+;C_Seg09	EQU	01000000B
+;C_Seg08	EQU	10000000B
+;C_Seg07	EQU	00000001B
+;C_Seg06	EQU	00000010B
+;C_Seg05	EQU	00000100B
+;C_Seg04	EQU	00001000B
+;C_Seg03	EQU	00010000B
+;C_Seg02	EQU	00100000B
+;C_Seg01	EQU	01000000B
+;C_Seg00	EQU	10000000B
+;
+
+Seg00	EQU	0
+Seg01	EQU	1
+Seg02	EQU	2
+Seg03	EQU	3
+Seg04	EQU	4
+;Seg05	EQU	13	;5
+;Seg06	EQU	14	;6
+;Seg07	EQU	15	;7
+Seg05	EQU	5
+Seg06	EQU	6
+Seg07	EQU	7
+Seg08	EQU	8
+Seg09	EQU	9
+Seg10	EQU	10
+Seg11	EQU	11
+Seg12	EQU	12
+;Seg13	EQU	5	;13
+;Seg14	EQU	6	;14
+;Seg15	EQU	7	;15
+Seg13	EQU	13
+Seg14	EQU	14
+Seg15	EQU	15
+;Seg00	EQU	0
+;Seg01	EQU	1
+;Seg02	EQU	2
+;Seg03	EQU	3
+;Seg04	EQU	4
+;Seg05	EQU	15
+;Seg06	EQU	14
+;Seg07	EQU	13
+;Seg08	EQU	12
+;Seg09	EQU	11
+;Seg10	EQU	10
+;Seg11	EQU	9
+;Seg12	EQU	8
+;Seg13	EQU	7
+;Seg14	EQU	6
+;Seg15	EQU	5
+C_Seg00	EQU	00000001B
+C_Seg01	EQU	00000010B
+C_Seg02	EQU	00000100B
+C_Seg03	EQU	00001000B
+C_Seg04	EQU	00010000B
+
+C_Seg15	EQU	10000000B
+C_Seg14	EQU	01000000B
+C_Seg13	EQU	00100000B
+C_Seg12	EQU	00010000B
+C_Seg11	EQU	00001000B
+C_Seg10	EQU	00000100B
+C_Seg09	EQU	00000010B
+C_Seg08	EQU	00000001B
+C_Seg07	EQU	10000000B
+C_Seg06	EQU	01000000B
+C_Seg05	EQU	00100000B
+;C_Seg05	EQU	10000000B
+;C_Seg06	EQU	01000000B
+;C_Seg07	EQU	00100000B
+;C_Seg08	EQU	00010000B
+;C_Seg09	EQU	00001000B
+;C_Seg10	EQU	00000100B
+;C_Seg11	EQU	00000010B
+;C_Seg12	EQU	00000001B
+;C_Seg13	EQU	10000000B
+;C_Seg14	EQU	01000000B
+;C_Seg15	EQU	00100000B
+;
+
+;Seg16	EQU	16
+;Seg17	EQU	17
+;Seg18	EQU	18
+;Seg19	EQU	19
+;Seg20	EQU	20
+;Seg21	EQU	21
+;Seg22	EQU	22
+;Seg23	EQU	23
+;Seg24	EQU	24
+;Seg25	EQU	25
+;Seg26	EQU	26
+;Seg27	EQU	27
+;Seg28	EQU	28
+;Seg29	EQU	29
+;Seg30	EQU	30
+;Seg31	EQU	31
+;------------------------------
+;C_Seg00	EQU	00000001B
+;C_Seg01	EQU	00000010B
+;C_Seg02	EQU	00000100B
+;C_Seg03	EQU	00001000B
+;C_Seg04	EQU	00010000B
+;C_Seg05	EQU	00100000B
+;C_Seg06	EQU	01000000B
+;C_Seg07	EQU	10000000B
+;C_Seg08	EQU	00000001B
+;C_Seg09	EQU	00000010B
+;C_Seg10	EQU	00000100B
+;C_Seg11	EQU	00001000B
+;C_Seg12	EQU	00010000B
+;C_Seg13	EQU	00100000B
+;C_Seg14	EQU	01000000B
+;C_Seg15	EQU	10000000B
+;C_Seg16	EQU	00000001B
+;C_Seg17	EQU	00000010B
+;C_Seg18	EQU	00000100B
+;C_Seg19	EQU	00001000B
+;C_Seg20	EQU	00010000B
+;C_Seg21	EQU	00100000B
+;C_Seg22	EQU	01000000B
+;C_Seg23	EQU	10000000B
+;C_Seg24	EQU	00000001B
+;C_Seg25	EQU	00000010B
+;C_Seg26	EQU	00000100B
+;C_Seg27	EQU	00001000B
+;C_Seg28	EQU	00010000B
+;C_Seg29	EQU	00100000B
+;C_Seg30	EQU	01000000B
+;C_Seg31	EQU	10000000B
+;======================================================
+.CODE
+;------------------------------
+;C_NotDispThisDigital	EQU	0AH
+;==============================
+T_SevenSegCharPosIndexTab:
+	DW	T_Digital1DispTab   ;1		;hourh
+	DW	T_Digital2DispTab   ;2		;hourl
+	DW	T_Digital3DispTab   ;3		;minh
+	DW	T_Digital4DispTab   ;4		;minl
+	DW	T_Digital5DispTab   ;5		;sech
+	DW	T_Digital6DispTab   ;6		;secl
+	DW	T_Digital7DispTab   ;7		;
+	DW	T_Digital8DispTab   ;8		;
+;	DW	T_Digital9DispTab   ;9
+;	DW	T_Digital10DispTab  ;10
+;	DW	T_Digital11DispTab  ;11
+;	DW	T_Digital12DispTab  ;12   
+;	DW	T_Digital13DispTab  ;13
+;	DW	T_Digital14DispTab  ;14
+;	DW	T_Digital15DispTab  ;15
+;	DW	T_Digital16DispTab  ;16
+;	DW	T_Digital17DispTab  ;17
+;	DW	T_Digital18DispTab  ;18
+;	DW	T_Digital19DispTab  ;19
+;	DW	T_Digital20DispTab  ;20
+;=======================
+T_SevenSegCharBitMapTab:
+;	       0,         1,       2,        3,        4
+	DB	00111111B,00000110B,01011011B,01001111B,01100110B
+;	       5,         6,       7,        8,        9
+	DB	01101101B,01111101B,00000111B,01111111B,01101111B
+;	       A,         B,       C,       '-'       'H'      
+	DB	01110011B,01111011B,01110111B,01000000B,01110110b
+;		'NULL'  		
+	DB	00000000B
+;---
+;format:byte index;mask bit
+;---
+
+; ================================
+T_Digital1DispTab:   ;;5 Time hourH
+	DB	C_Com3MinByteNum+Seg15/8,C_Seg15 ;a
+	DB	C_Com3MinByteNum+Seg14/8,C_Seg14 ;b
+	DB	C_Com1MinByteNum+Seg14/8,C_Seg14 ;c
+	DB	C_Com0MinByteNum+Seg15/8,C_Seg15 ;d
+	DB	C_Com1MinByteNum+Seg15/8,C_Seg15 ;e
+	DB	C_Com2MinByteNum+Seg15/8,C_Seg15 ;f 
+	DB	C_Com2MinByteNum+Seg14/8,C_Seg14 ;g
+T_Digital1DispTabEnd:
+; ================================
+T_Digital2DispTab:   ;;6 Time hourL
+	DB	C_Com3MinByteNum+Seg13/8,C_Seg13 ;a
+	DB	C_Com2MinByteNum+Seg12/8,C_Seg12 ;b
+	DB	C_Com1MinByteNum+Seg12/8,C_Seg12 ;c
+	DB	C_Com0MinByteNum+Seg14/8,C_Seg14 ;d
+	DB	C_Com0MinByteNum+Seg13/8,C_Seg13 ;e
+	DB	C_Com2MinByteNum+Seg13/8,C_Seg13 ;f 
+	DB	C_Com1MinByteNum+Seg13/8,C_Seg13 ;g
+T_Digital2DispTabEnd:
+; ================================
+T_Digital3DispTab:   ;;7 Time minH
+	DB	C_Com3MinByteNum+Seg11/8,C_Seg11 ;a
+	DB	C_Com3MinByteNum+Seg10/8,C_Seg10 ;b
+	DB	C_Com1MinByteNum+Seg10/8,C_Seg10 ;c
+	DB	C_Com0MinByteNum+Seg11/8,C_Seg11 ;d
+	DB	C_Com0MinByteNum+Seg12/8,C_Seg12 ;e
+	DB	C_Com2MinByteNum+Seg11/8,C_Seg11 ;f 
+	DB	C_Com1MinByteNum+Seg11/8,C_Seg11 ;g
+T_Digital3DispTabEnd:
+
+; ================================
+T_Digital4DispTab:   ;;8 Time MinL
+	DB	C_Com3MinByteNum+Seg09/8,C_Seg09 ;a
+	DB	C_Com3MinByteNum+Seg08/8,C_Seg08 ;b
+	DB	C_Com1MinByteNum+Seg09/8,C_Seg09 ;c
+	DB	C_Com0MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com0MinByteNum+Seg10/8,C_Seg10 ;e
+	DB	C_Com2MinByteNum+Seg10/8,C_Seg10 ;f 
+	DB	C_Com2MinByteNum+Seg09/8,C_Seg09 ;g
+T_Digital4DispTabEnd:
+; ================================
+T_Digital5DispTab:   ;;5 Time secH
+	DB	C_Com3MinByteNum+Seg07/8,C_Seg07 ;a
+	DB	C_Com2MinByteNum+Seg07/8,C_Seg07 ;b
+	DB	C_Com0MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com0MinByteNum+Seg08/8,C_Seg08 ;d
+	DB	C_Com1MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com2MinByteNum+Seg08/8,C_Seg08 ;f 
+	DB	C_Com1MinByteNum+Seg07/8,C_Seg07 ;g
+T_Digital5DispTabEnd:
+; ================================
+T_Digital6DispTab:   ;;6 Time secL
+	DB	C_Com3MinByteNum+Seg06/8,C_Seg06 ;a
+	DB	C_Com3MinByteNum+Seg05/8,C_Seg05 ;b
+	DB	C_Com1MinByteNum+Seg05/8,C_Seg05 ;c
+	DB	C_Com0MinByteNum+Seg06/8,C_Seg06 ;d
+	DB	C_Com1MinByteNum+Seg06/8,C_Seg06 ;e
+	DB	C_Com2MinByteNum+Seg06/8,C_Seg06 ;f 
+	DB	C_Com2MinByteNum+Seg05/8,C_Seg05 ;g
+T_Digital6DispTabEnd:
+; ================================
+T_Digital7DispTab:   ;;7 Time secH
+;	DB	C_Com0MinByteNum+Seg07/8,C_Seg07 ;a
+;	DB	C_Com0MinByteNum+Seg06/8,C_Seg06 ;b
+;	DB	C_Com2MinByteNum+Seg06/8,C_Seg06 ;c
+;	DB	C_Com3MinByteNum+Seg07/8,C_Seg07 ;d
+;	DB	C_Com2MinByteNum+Seg07/8,C_Seg07 ;e
+;	DB	C_Com1MinByteNum+Seg07/8,C_Seg07 ;f 
+;	DB	C_Com1MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital7DispTabEnd:
+
+; ================================
+T_Digital8DispTab:   ;;8 Time secL
+;	DB	C_Com0MinByteNum+Seg05/8,C_Seg05 ;a
+;	DB	C_Com0MinByteNum+Seg04/8,C_Seg04 ;b
+;	DB	C_Com2MinByteNum+Seg04/8,C_Seg04 ;c
+;	DB	C_Com3MinByteNum+Seg05/8,C_Seg05 ;d
+;	DB	C_Com2MinByteNum+Seg05/8,C_Seg05 ;e
+;	DB	C_Com1MinByteNum+Seg05/8,C_Seg05 ;f 
+;	DB	C_Com1MinByteNum+Seg04/8,C_Seg04 ;g
+T_Digital8DispTabEnd:
+
+; ================================
+T_ICON:
+T_COL	EQU	$-T_ICON
+	DB	C_Com3MinByteNum+Seg12/8,C_Seg12 ;colon
+
+
+	
+	
+	
+	
+	
+	
+
+	
+	

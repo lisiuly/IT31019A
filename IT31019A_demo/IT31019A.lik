@@ -1,0 +1,20 @@
+locate: PAGE0 at 0080h reference
+locate: LCM_Driver_ZRAM		after PAGE0				;for EV use
+locate: LCM_Driver_NRAM		after LCM_Driver_ZRAM	;for EV use
+locate: LCD_ZRAM			after LCM_Driver_NRAM
+locate: LCD_NRAM			after LCD_ZRAM
+locate: CalculationZRAM after LCD_NRAM
+
+locate: RFC_Calculate_RAM at 01C0h reference
+;locate: RFC_Calculate_RAM after RFCDriverRAM
+
+locate: CODE  at E000H
+locate: LCM_Driver_Code after CODE					;for EV use
+locate: LCD_Code after LCM_Driver_Code
+locate: RFC_Temp after LCD_Code
+locate: RFC_Hum after RFC_Temp
+
+locate: ModeSelect_EVorOTP at FFF7H					;OTP:0x01 ,EV:0x02
+locate: IRQ_VEC_00 at FFFEh optional
+locate: VECTOR at FFFAH
+	

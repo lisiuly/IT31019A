@@ -1,0 +1,33 @@
+version : Mon Apr 20 09:19:46 2026
+
+options : , Microtek24, map, bin, Fill 0xFF
+input   : ".\Release\STARTUP.OBJ", ".\Release\INT_VEC.OBJ", ".\Release\GPL812P01B_LCM_DRIVER.OBJ", ".\Release\GPL812P01B_LCD.OBJ", ".\Release\RFCCALCULATE.OBJ", ".\Release\RFCDRIVER.OBJ", ".\Release\RFC.OBJ", ".\Release\DISPLAY.OBJ", ".\Release\KEY.OBJ", ".\Release\Res_Tbl.obj"
+; No ObjectFileName for MIDIInstrument
+; No ObjectInfo for Audio Resource
+; No ObjectFileName for EquationTable
+; No ObjectFileName for Predefined Resources
+library : 
+body    : "C:\Program Files (x86)\Generalplus\GPIDE_6502 1.2.8\gplus\project\Body\6502\GPL812\\.\ChipInformation\GPL812P01Bx_ChipInfo.conf"
+output  : ".\Release\IT31019A.bin"
+;<--UserDefineStart-->.\IT31019A.lik
+locate: PAGE0 at 0080h reference
+locate: LCM_Driver_ZRAM		after PAGE0				;for EV use
+locate: LCM_Driver_NRAM		after LCM_Driver_ZRAM	;for EV use
+locate: LCD_ZRAM			after LCM_Driver_NRAM
+locate: LCD_NRAM			after LCD_ZRAM
+locate: CalculationZRAM after LCD_NRAM
+
+locate: RFC_Calculate_RAM at 01C0h reference
+;locate: RFC_Calculate_RAM after RFCDriverRAM
+
+locate: CODE  at E000H
+locate: LCM_Driver_Code after CODE					;for EV use
+locate: LCD_Code after LCM_Driver_Code
+locate: RFC_Temp after LCD_Code
+locate: RFC_Hum after RFC_Temp
+
+locate: ModeSelect_EVorOTP at FFF7H					;OTP:0x01 ,EV:0x02
+locate: IRQ_VEC_00 at FFFEh optional
+locate: VECTOR at FFFAH
+	
+;<--UserDefineEnd-->

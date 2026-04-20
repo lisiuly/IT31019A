@@ -1,0 +1,832 @@
+;==========================================
+.SYNTAX 6502
+.LINKLIST
+.SYMBOLS
+;==========================================
+; Include file area
+;==========================================
+.INCLUDE 	GPL812P01B.inc
+.INCLUDE	"GPL812P01B_LCM_Driver\GPL812P01B_LCM_Driver.inc"
+.INCLUDE	"LCD\GPL812P01B_LCD.inc"
+.INCLUDE	include\Project.inc
+.INCLUDE	include\Macro.inc
+.INCLUDE	include\Key.inc
+.INCLUDE	include\rtc.inc
+.INCLUDE	include\user.inc
+;.INCLUDE	RFC\RFC_user.inc
+;==========================================
+; External declare area
+;==========================================
+.EXTERNAL	LCD_DPRAM_Buffer
+;==========================================
+; Public declare area
+;==========================================
+.PUBLIC         F_ClrLcdDpram
+.PUBLIC         F_ClrPage0SRAM
+.PUBLIC         F_ClrSRAM
+.PUBLIC			F_Display
+;.PUBLIC			F_CheckWakeLEDInc
+.PUBLIC			R_TempBuf
+;==========================================
+;Variable RAM declare area
+;========================================== 
+.PAGE0
+R_Temp0			ds		1
+R_Temp1			ds		1
+R_Temp2			ds		1
+R_Temp3			ds		1
+R_Temp4			ds		1
+
+R_TempBuf	ds		1
+
+;==============================================================================
+.CODE
+;==============================================================================
+F_Display:							;显示时间
+		
+		LDA		R_KeyFlag
+		AND		#D_LCDOFF
+		BEQ		$+3
+		RTS
+		LDA		R_OtherFlag
+		AND		#D_TestMode
+		BEQ		$+5
+		JMP		F_DisplayTestMode
+F_DisplayAllMode:
+		
+		JSR		F_DisplayBatIcon
+		%btst	R_OtherFlag,D_LowBat,?FlashDispAll
+		%btst	R_TimeStatus,AddOthers,?DisplayAll		
+	?NoDisplayAll:
+		RTS	
+		
+	?DisplayAll:
+		%bitr	R_TimeStatus,AddOthers
+		JSR		F_DisplayLock
+		JSR		F_DisplayNum
+		JSR		F_NoDisplay_Bat
+		JSR		F_DisplayCounter
+		RTS
+		
+	?FlashDispAll:
+		%btst	R_TimeStatus,HalfSecToggle,?NoDisplayAllLCD
+		%bits	R_OtherFlag,(D_LockUpdate+D_NumUpdate)
+		JSR		F_DisplayLock
+		JSR		F_DisplayNum
+		JSR		F_DisplayCounter
+		RTS
+		
+	?NoDisplayAllLCD:
+		JSR		F_NoDispAllNum
+		JSR		F_NoDisplay_Lock
+		JSR		F_NoDisplay_Bat
+		JSR		F_NoDisplayAllValue
+		RTS
+		
+;	?TestModeDisplay:
+;		%btst	R_TimeStatus,HalfSecToggle,?NoDisplayAllLCD
+;		LDA		#88H
+;		STA		R_CounterTemp+0
+;		STA		R_CounterTemp+1
+;		STA		R_CounterTemp+2
+;		JSR		DisplayCurrentValue
+;		JSR		F_Display_Lock
+;		JSR		F_DispTestNum
+;;		JSR		F_DisplayBatIcon		
+;		RTS
+;==== Display the Current Value ============	
+F_DisplayCounter:
+			lda		R_CounterNum
+			cmp		#D_Counter_1
+			BNE		$+5
+			JMP		Display_Counter_1
+			cmp		#D_Counter_2
+			BNE		$+5
+			JMP		Display_Counter_2
+			cmp		#D_Counter_3
+			BNE		$+5
+			JMP		Display_Counter_3
+			cmp		#D_Counter_4
+			BNE		$+5
+			JMP		Display_Counter_4
+			cmp		#D_Counter_5
+			BNE		$+5
+			JMP		Display_Counter_5
+			cmp		#D_Counter_6
+			BNE		$+5
+			JMP		Display_Counter_6
+			cmp		#D_Counter_7
+			BNE		$+5
+			JMP		Display_Counter_7
+			JMP		Display_Counter_8
+			
+;==========================================================
+;=====================================================
+Display_Counter_1:					;显示当前的序号1
+			%R_TempPlus		R_Counter_1,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_2:			;显示当前的序号2
+			%R_TempPlus		R_Counter_2,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_3:			;显示当前的序号3
+			%R_TempPlus		R_Counter_3,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_4:			;显示当前的序号4
+			%R_TempPlus		R_Counter_4,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_5:			;显示当前的序号5
+			%R_TempPlus		R_Counter_5,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_6:			;显示当前的序号6
+			%R_TempPlus		R_Counter_6,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_7:			;显示当前的序号7
+			%R_TempPlus		R_Counter_7,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+Display_Counter_8:			;显示当前的序号8
+			%R_TempPlus		R_Counter_8,R_CounterTemp
+			jsr		DisplayCurrentValue
+			rts
+;--------------------------------------------
+;--------------------------------------------
+DisplayCurrentValue:			
+DisplayNumber1:
+			lda		R_CounterTemp+2
+			JSR		F_ByteHLValue
+;			beq		NoDisplayNumber1					;不判断是否为0，所有数都要显示
+			TAX
+			LDY		#00
+			jsr		F_DispTheSevenSegChar
+DisplayNumber2:
+			LDA		R_TempBuf
+			AND		#0FH
+			TAX
+			LDY		#01
+			jsr		F_DispTheSevenSegChar
+;---------------------------------------
+DisplayNumber3:			
+			lda		R_CounterTemp+1
+			JSR		F_ByteHLValue
+;			beq		NoDisplayNumber3
+			TAX
+			LDY		#02
+			jsr		F_DispTheSevenSegChar
+DisplayNumber4:
+			lda		R_TempBuf
+			AND		#0FH
+			TAX
+			LDY		#03
+			jsr		F_DispTheSevenSegChar
+;------------------------------------
+DisplayNumber5:
+			lda		R_CounterTemp+0
+			JSR		F_ByteHLValue
+			TAX
+;			beq		NoDisplayNumber5
+			LDY		#04
+			jsr		F_DispTheSevenSegChar
+DisplayNumber6:
+			lda		R_TempBuf
+			AND		#0FH
+			TAX
+			LDY		#05
+			jsr		F_DispTheSevenSegChar			
+			RTS
+		
+NoDisplayNumber1:						;第1位为0不显示
+			lda		#0AH
+			TAX
+			LDY		#00
+			jsr		F_DispTheSevenSegChar
+			lda		R_TempBuf
+			beq		NoDisplayNumber2
+			jmp		DisplayNumber2
+NoDisplayNumber2:						;第2位为0不显示
+			lda		#0AH
+			TAX
+			LDY		#01
+			jsr		F_DispTheSevenSegChar	
+			
+			lda		R_CounterTemp+1		
+			JSR		F_ByteHLValue
+			beq		NoDisplayNumber3
+			jmp		DisplayNumber3
+NoDisplayNumber3:					;第3位为0不显示
+			lda		#0AH
+			TAX
+			LDY		#02
+			jsr		F_DispTheSevenSegChar
+			lda		R_TempBuf
+			beq		NoDisplayNumber4
+			jmp		DisplayNumber4
+NoDisplayNumber4:
+			lda		#0AH					;第4位为0不显示
+			TAX
+			LDY		#03
+			jsr		F_DispTheSevenSegChar
+			
+			lda		R_CounterTemp+0		
+			JSR		F_ByteHLValue
+			beq		NoDisplayNumber5
+			jmp		DisplayNumber5
+NoDisplayNumber5:							;第5位为0不显示
+			lda		#0AH
+			TAX
+			LDY		#04
+			jsr		F_DispTheSevenSegChar
+			jmp		DisplayNumber6	
+;==========================================================
+;全部数字不显示
+F_NoDisplayAllValue:
+			LDX		#0FH
+			LDY		#00
+			JSR		F_DispTheSevenSegChar
+			LDX		#0FH
+			LDY		#01
+			JSR		F_DispTheSevenSegChar
+			LDX		#0FH
+			LDY		#02
+			JSR		F_DispTheSevenSegChar
+			LDX		#0FH
+			LDY		#03
+			JSR		F_DispTheSevenSegChar
+			LDX		#0FH
+			LDY		#04
+			JSR		F_DispTheSevenSegChar
+			LDX		#0FH
+			LDY		#05
+			JSR		F_DispTheSevenSegChar
+			RTS
+;==========================================================
+F_DisplayLock:
+		%btst	R_OtherFlag,D_LockUpdate,?UpdateDispLock
+		RTS
+	?UpdateDispLock:
+		%bitr	R_OtherFlag,D_LockUpdate
+		LDA		R_OtherFlag
+		AND		#D_LockFlag
+		BNE		?GetLock
+	?GetUnLock:
+		JSR		F_NoDisplay_Lock
+		RTS
+	?GetLock:
+		JSR		F_Display_Lock
+		RTS
+;==========================================================
+	
+;==========================================================	
+
+;==========================================================
+F_DispTestNum:
+		LDX		#08
+		LDY		#06
+		JSR		F_DispTheSevenSegChar
+		RTS
+;==========================================================
+.PUBLIC		F_DisplayNum
+F_DisplayNum:
+		LDX		#T_CHAN
+		JSR		F_DisplayBit
+	?UpdateDispNum:
+		LDX		R_CounterNum
+		LDY		#06
+		JSR		F_DispTheSevenSegChar	
+		RTS
+;----------------------------------------------------------	
+F_NoDispAllNum:
+		LDX		#0FH
+		LDY		#06
+		JSR		F_DispTheSevenSegChar
+		RTS
+;----------------------------------------------------------	
+F_DispAllNum:
+
+		RTS
+		
+;==============================================
+F_DisplayBatIcon:
+
+		JSR		F_Display_Full
+		RTS
+		
+F_Display_Full:
+		LDX		#T_BAT2
+		JSR		F_DisplayBit
+F_Display_Leve2:
+		LDX		#T_BAT3
+		JSR		F_DisplayBit
+F_Display_Leve3:
+		LDX		#T_BAT4
+		JSR		F_DisplayBit
+F_Display_Leve4:
+		LDX		#T_BAT1
+		JMP		F_DisplayBit
+;----------------------------------------------	
+F_NoDisplay_Bat:
+;		LDX		#T_Bat
+;		JSR		F_NoDisplayBit
+		RTS	
+;==============================================
+F_Display_Lock:
+		LDX		#T_Lock
+		JSR		F_DisplayBit
+		RTS	
+;----------------------------------------------		
+F_NoDisplay_Lock:
+		LDX		#T_Lock
+		JSR		F_NoDisplayBit
+		RTS
+;----------------------------------------------
+F_DispAllOFF:
+		LDA		#0x00
+		JSR		F_LCD_Clear			;LCD DPRAM Clear
+		%FillLcdDpram	#00H
+		RTS
+;----------------------------------------------	
+.PUBLIC		F_ByteHLValue
+F_ByteHLValue:					;高四位移到低4位
+			STA	R_TempBuf
+			AND	#F0H
+			ROR	A
+			ROR	A
+			ROR	A
+			ROR	A
+			AND	#0FH
+			RTS
+;-------------------------------
+.PUBLIC		F_ByteLHValue
+F_ByteLHValue:					;低4位移到高4位
+			STA	R_TempBuf
+			AND	#0FH
+			ROL	A
+			ROL	A
+			ROL	A
+			ROL	A
+			AND	#F0H
+			RTS
+			
+;==========================================================	
+;测试模式显示
+F_DisplayTestMode:
+		LDA		R_Temp00
+		CMP		#10
+		BEQ		?L_AddChannel
+		CMP		#11
+		BEQ		?L_AddLock
+		CMP		#12
+		BEQ		?L_AddBat2
+		CMP		#13
+		BEQ		?L_AddBat3
+		CMP		#14
+		BEQ		?L_AddBat4
+		CMP		#15
+		BEQ		?L_AddBat1
+		CMP		#16
+		BEQ		?L_TestEnd
+		LDX		R_Temp00
+		LDY		#00                  
+		JSR		F_DispTheSevenSegChar    ;		
+		LDX		R_Temp00			    
+		LDY		#01                 
+		JSR		F_DispTheSevenSegChar    ;		
+		LDX		R_Temp00			    
+		LDY		#02                 
+		JSR		F_DispTheSevenSegChar    ;			
+		LDX		R_Temp00			    
+		LDY		#03                 
+		JSR		F_DispTheSevenSegChar    ;			
+		LDX		R_Temp00			    
+		LDY		#04                
+		JSR		F_DispTheSevenSegChar    ;			
+		LDX		R_Temp00			    
+		LDY		#05                 
+		JSR		F_DispTheSevenSegChar    ;
+		LDX		R_Temp00			    
+		LDY		#06                 
+		JSR		F_DispTheSevenSegChar    ;
+		RTS
+?L_AddChannel:
+		LDX		#T_CHAN
+		JSR		F_DisplayBit			;显示通道图标
+		RTS
+?L_AddLock:
+			LDX		#T_Lock
+			JSR		F_DisplayBit			;显示通道图标
+			RTS
+?L_AddBat2:
+			LDX		#T_BAT2
+			JSR		F_DisplayBit			;显示通道图标
+			RTS
+?L_AddBat3:
+			LDX		#T_BAT3
+			JSR		F_DisplayBit			;显示通道图标
+			RTS
+?L_AddBat4:
+			LDX		#T_BAT4
+			JSR		F_DisplayBit			;显示通道图标
+			RTS
+?L_AddBat1:
+			LDX		#T_BAT1
+			JSR		F_DisplayBit			;显示通道图标
+			RTS
+?L_TestEnd:
+		%bitr	R_OtherFlag,(D_NumUpdate+D_TestMode)				
+		%bits	R_OtherFlag,D_LockUpdate
+		%bits	R_TimeStatus,AddOthers
+		LDA		P_IO_PortD_Data
+		ORA		#(D_Bit7+D_Bit2+D_Bit3+D_Bit5)
+		STA		P_IO_PortD_Data
+		RTS
+;==========================================================	
+.PUBLIC		F_TestModeCnt
+F_TestModeCnt:
+		LDA		R_OtherFlag
+		AND		#D_TestMode
+		BNE		$+3
+		RTS
+		INC		R_Temp00		;当RTC+2大于1后才开始加一
+		RTS
+		
+;==========================================================			
+;----------------------------------------------
+;  Name:	ClrPage0_80H_BFH
+; Description:	Clear SRAM $80 ~ $BF
+;----------------------------------------------
+F_ClrPage0SRAM:	
+		LDX		#3FH
+		LDA		#00H		
+?L_ClrLoop#:
+		STA		$80,X
+		DEX
+		BNE		?L_ClrLoop#	   ;Z=0		
+		STA		$80
+	    RTS
+;-----------------------------------------------------------------------------
+; Name:	ClrLcdDpram
+; Description:	Clear LCD DPRAM $50 ~$5F
+;-----------------------------------------------------------------------------
+F_ClrLcdDpram:
+		%M_InitLCD
+		%FillLcdDpram	#00H
+		RTS
+;-----------------------------------------------------------------------------
+; Name:	LcdDpram(Fill FFH)
+; Description:	AllDisplayLcd
+;-----------------------------------------------------------------------------
+F_AllDisplayLcd:
+		%M_InitLCD
+		%FillLcdDpram	#FFH
+		RTS
+;-----------------------------------------------------------------------------
+;Name:	        ClrSRAM
+; Description:	Clear SRAM $80 ~ $FF
+;-----------------------------------------------------------------------------
+F_ClrSRAM:	
+		LDA		#.LOW.(C_SramAddrStart+2)
+		STA		C_SramAddrStart
+		LDA		#.HIGH.(C_SramAddrStart+2)
+		STA		C_SramAddrStart+1
+		
+		LDX     #0
+?L_FillLoop#:
+        LDA     #0
+		STA     (C_SramAddrStart,X)
+		
+		LDA     C_SramAddrStart+1
+		CMP     #.HIGH.C_SramAddrEnd
+		BCC     ?L_IncSramAddr#
+		LDA     C_SramAddrStart
+		CMP     #.LOW.C_SramAddrEnd
+		BCS     ?L_End#
+		
+?L_IncSramAddr#:    ;Increase sram address
+        INC     C_SramAddrStart
+		BNE     ?L_FillLoop#
+		INC     C_SramAddrStart+1
+	    STA	    P_WDT_Flag_Clear     ;WatchDogClear  
+        JMP     ?L_FillLoop#
+?L_End#:
+        LDA     #0
+        STA     C_SramAddrStart
+        STA     C_SramAddrStart+1		
+	    RTS
+;===========================================  		
+F_DispTheSevenSegChar:
+		LDA	T_SevenSegCharBitMapTab,X
+	F_DisplaySevenIcon:					;取得显示点的序列的起始地址
+		STA	R_Temp1								;R_Temp1存放字符的位映射
+		TYA
+		ASL	A		; A<128
+		TAX
+		LDA	T_SevenSegCharPosIndexTab,X
+		STA	R_Temp3
+		LDA	T_SevenSegCharPosIndexTab+1,X	;取字符的显示映射表的地址
+		STA	R_Temp4
+	;------
+	;dot start addr:R_Temp3,R_Temp4. disp byte:R_Temp1.
+	;F_DispByte:
+		LDA	#7
+		STA	R_Temp2
+	L_DispByte_1:
+		LDX	#0
+		LDA	(R_Temp3,X)
+		STA	R_Temp0
+		INC	R_Temp3
+		BNE	L_DispByte_1_0
+		INC	R_Temp4
+	L_DispByte_1_0:
+		LDA	(R_Temp3,X)
+		INC	R_Temp3
+		BNE	L_DispByte_1_1
+		INC	R_Temp4
+	L_DispByte_1_1:
+		LDX	R_Temp0
+		ROR	R_Temp1
+		BCS	L_DispByte_1_1_1
+	L_DispByte_1_1_0:
+		STA	R_Temp0
+	.if	(GPL812P01Bx_Mode=EV_Simualtion)
+		LDA	LCD_DPRAM_Buffer,x		;$50,X
+		ORA	R_Temp0
+		EOR	R_Temp0
+		STA	LCD_DPRAM_Buffer,x			;	$50,X
+	.ELSE
+		LDA	$50,X
+		ORA	R_Temp0
+		EOR	R_Temp0
+		STA	$50,X
+	.ENDIF	
+		DEC	R_Temp2
+		BNE	L_DispByte_1
+		RTS
+	L_DispByte_1_1_1:
+		STA	R_Temp0
+	.if	(GPL812P01Bx_Mode=EV_Simualtion)	
+		LDA	LCD_DPRAM_Buffer,x		;$50,X
+		ORA	R_Temp0
+		STA	LCD_DPRAM_Buffer,x		;$50,X
+	.ELSE
+		LDA	$50,X
+		ORA	R_Temp0
+		STA	$50,X
+	.ENDIF				
+		DEC	R_Temp2
+		BNE	L_DispByte_1
+		RTS
+;=============================
+;input x
+;=============================
+F_DisplayBit:
+		LDA	T_ICON,x
+		STA	R_Temp0
+		inx
+		LDA	T_ICON,x
+		STA	R_Temp1
+		LDX	R_Temp0
+	.if	(GPL812P01Bx_Mode=EV_Simualtion)	
+		LDA	LCD_DPRAM_Buffer,x		;$50,X
+		ORA	R_Temp1
+		STA	LCD_DPRAM_Buffer,x		;$50,X
+	.ELSE
+		LDA	$50,X
+		ORA	R_Temp1
+		STA	$50,X
+	.ENDIF				
+		RTS
+;=============================
+;input x
+;=============================
+F_NoDisplayBit:
+		LDA	T_ICON,x
+		STA	R_Temp0
+		inx
+		LDA	T_ICON,x
+		EOR	#FFH
+		STA	R_Temp1
+		LDX	R_Temp0
+	.if	(GPL812P01Bx_Mode=EV_Simualtion)	
+		LDA	LCD_DPRAM_Buffer,x		;$50,X
+		and	R_Temp1
+		STA	LCD_DPRAM_Buffer,x		;$50,X
+	.ELSE
+		LDA	$50,X
+		and	R_Temp1
+		STA	$50,X
+	.ENDIF				
+		RTS		
+;=========================================================================
+;==========================================
+;C_Com0MinByteNum	EQU	00h	;00H
+;C_Com1MinByteNum	EQU	02h	;02H
+;C_Com2MinByteNum	EQU	04H
+;C_Com3MinByteNum	EQU	06H
+;C_Com4MinByteNum	EQU	08H
+;C_Com5MinByteNum	EQU	0AH
+
+C_Com0MinByteNum	EQU	0Ah	;00H
+C_Com1MinByteNum	EQU	08h	;02H
+C_Com2MinByteNum	EQU	06H
+C_Com3MinByteNum	EQU	04H
+C_Com4MinByteNum	EQU	02H
+C_Com5MinByteNum	EQU	00H
+
+;Seg00	EQU	00
+;Seg01	EQU	01
+;Seg02	EQU	02
+;Seg03	EQU	03
+;Seg04	EQU	04
+;Seg05	EQU	05
+;Seg06	EQU	06
+;Seg07	EQU	07
+;Seg08	EQU	08
+;Seg09	EQU	09
+;Seg10	EQU	10
+;Seg11	EQU	11
+;Seg12	EQU	12
+;Seg13	EQU	13
+;Seg14	EQU	14
+;Seg15	EQU	15
+;
+;C_Seg15	EQU	10000000B
+;C_Seg14	EQU	01000000B
+;C_Seg13	EQU	00100000B
+;C_Seg12	EQU	00010000B
+;C_Seg11	EQU	00001000B
+;C_Seg10	EQU	00000100B
+;C_Seg09	EQU	00000010B
+;C_Seg08	EQU	00000001B
+;C_Seg07	EQU	10000000B
+;C_Seg06	EQU	01000000B
+;C_Seg05	EQU	00100000B
+;C_Seg04	EQU	00010000B
+;C_Seg03	EQU	00001000B
+;C_Seg02	EQU	00000100B
+;C_Seg01	EQU	00000010B
+;C_Seg00	EQU	00000001B
+;
+;----------------------------------
+
+Seg09	EQU	04
+Seg08	EQU	05
+Seg07	EQU	06
+Seg06	EQU	07
+Seg05	EQU	08
+Seg04	EQU	09
+Seg03	EQU	10
+Seg02	EQU	11
+Seg01	EQU	12
+Seg00	EQU	13
+
+C_Seg00	EQU	00100000B
+C_Seg01	EQU	00010000B
+C_Seg02	EQU	00001000B
+C_Seg03	EQU	00000100B
+C_Seg04	EQU	00000010B
+C_Seg05	EQU	00000001B
+C_Seg06	EQU	10000000B
+C_Seg07	EQU	01000000B
+C_Seg08	EQU	00100000B
+C_Seg09	EQU	00010000B
+
+;======================================================
+.CODE
+;------------------------------
+;C_NotDispThisDigital	EQU	0AH
+;==============================
+T_SevenSegCharPosIndexTab:
+	DW	T_Digital1DispTab   ;1		;HourH
+	DW	T_Digital2DispTab   ;2		;HourL
+	DW	T_Digital3DispTab   ;3		;MinH
+	DW	T_Digital4DispTab   ;4		;MinL
+	DW	T_Digital5DispTab   ;5		;MinL
+	DW	T_Digital6DispTab   ;6		;MinL
+	DW	T_Digital7DispTab   ;7		;MinL
+;=======================
+T_SevenSegCharBitMapTab:
+;	       0,         1,       2,        3,        4
+	DB	00111111B,00000110B,01011011B,01001111B,01100110B
+;	       5,         6,       7,        8,        9
+	DB	01101101B,01111101B,00000111B,01111111B,01101111B
+;	      A-"A"     B-"b"     C-"C"    D-'L'       E-'E'      
+	DB	01110111B,01111100B,00111001B,00111000B,01111001B
+;		F;'NULL'  	10-"r"	11-"Dash"
+	DB	00000000B,01010000B,01000000B
+;---
+;format:byte index;mask bit
+;---
+; ================================
+	;实际LCD
+;.comment	
+; ================================
+; ================================
+T_Digital1DispTab:   ;;0 Time minH
+	DB	C_Com0MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com0MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com0MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com0MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com0MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com0MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com0MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital1DispTabEnd:
+; ================================
+T_Digital2DispTab:   ;;1 Time minL
+	DB	C_Com1MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com1MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com1MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com1MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com1MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com1MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com1MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital2DispTabEnd:
+; ================================
+T_Digital3DispTab:   ;;2 Time secH
+	DB	C_Com2MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com2MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com2MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com2MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com2MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com2MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com2MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital3DispTabEnd:
+
+; ================================
+T_Digital4DispTab:   ;;3 Time secL
+	DB	C_Com3MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com3MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com3MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com3MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com3MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com3MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com3MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital4DispTabEnd:
+; ================================
+	
+; ================================
+T_Digital5DispTab:   ;;3 Time secL
+	DB	C_Com4MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com4MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com4MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com4MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com4MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com4MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com4MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital5DispTabEnd:
+; ================================
+	
+; ================================
+T_Digital6DispTab:   ;;3 Time secL
+	DB	C_Com5MinByteNum+Seg03/8,C_Seg03 ;a
+	DB	C_Com5MinByteNum+Seg04/8,C_Seg04 ;b
+	DB	C_Com5MinByteNum+Seg07/8,C_Seg07 ;c
+	DB	C_Com5MinByteNum+Seg09/8,C_Seg09 ;d
+	DB	C_Com5MinByteNum+Seg08/8,C_Seg08 ;e
+	DB	C_Com5MinByteNum+Seg05/8,C_Seg05 ;f 
+	DB	C_Com5MinByteNum+Seg06/8,C_Seg06 ;g
+T_Digital6DispTabEnd:
+; ================================
+	
+; ================================
+T_Digital7DispTab:   ;;3 Time secL
+	DB	C_Com5MinByteNum+Seg01/8,C_Seg01 ;a
+	DB	C_Com4MinByteNum+Seg01/8,C_Seg01 ;b
+	DB	C_Com3MinByteNum+Seg01/8,C_Seg01 ;c
+	DB	C_Com2MinByteNum+Seg01/8,C_Seg01 ;d
+	DB	C_Com3MinByteNum+Seg00/8,C_Seg00 ;e
+	DB	C_Com5MinByteNum+Seg00/8,C_Seg00 ;f 
+	DB	C_Com4MinByteNum+Seg00/8,C_Seg00 ;g
+T_Digital7DispTabEnd:
+; ================================
+; ================================
+T_ICON:
+
+T_BAT1	EQU	$-T_ICON
+	DB	C_Com0MinByteNum+Seg02/8,C_Seg02 ;	外壳
+T_BAT2	EQU	$-T_ICON
+	DB	C_Com2MinByteNum+Seg02/8,C_Seg02 ;	电池芯1	
+T_BAT3	EQU	$-T_ICON
+	DB	C_Com3MinByteNum+Seg02/8,C_Seg02 ;	电池芯2
+T_BAT4	EQU	$-T_ICON
+	DB	C_Com1MinByteNum+Seg02/8,C_Seg02 ;	电池芯3
+		
+T_Lock	EQU	$-T_ICON
+	DB	C_Com5MinByteNum+Seg02/8,C_Seg02 ;
+T_CHAN	EQU	$-T_ICON
+	DB	C_Com2MinByteNum+Seg00/8,C_Seg00 ;
+		
+.END
+;*************************************************************************  	
+ 	

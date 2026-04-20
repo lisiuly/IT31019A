@@ -1,0 +1,20 @@
+-R ".\IT31019A.qpcres"
+-P ".\IT31019A.qpcact"
+-O ".\_Prog_.lik"
+-B ".\Release\IT31019A.bin"
+-F "C:\Program Files (x86)\Generalplus\GPIDE_6502 1.2.8\gplus\project\Body\6502\GPL812\\.\ChipInformation\GPL812P01Bx_ChipInfo.conf"
+-S ".\IT31019A.lik"
+-L ".\Release\STARTUP.OBJ"
+-L ".\Release\INT_VEC.OBJ"
+-L ".\Release\GPL812P01B_LCM_DRIVER.OBJ"
+-L ".\Release\GPL812P01B_LCD.OBJ"
+-L ".\Release\RFCCALCULATE.OBJ"
+-L ".\Release\RFCDRIVER.OBJ"
+-L ".\Release\RFC.OBJ"
+-L ".\Release\DISPLAY.OBJ"
+-L ".\Release\KEY.OBJ"
+-L ".\Release\Res_Tbl.obj"
+-N
+-A
+-Z 0xFF
+-D
